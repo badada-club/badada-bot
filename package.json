@@ -1,0 +1,16 @@
+{
+  "name": "badada-bot-server",
+  "version": "0.1.0",
+  "description": "An app responsible for handling requests from the 'Badata Events' Telegram bot.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Badata IT",
+  "license": "ISC",
+
+  "engines": {
+    "node": "16.x"
+  }
+}

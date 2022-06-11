@@ -1,0 +1,1 @@
+This is an app responsible for handling requests from the 'Badata Events' Telegram bot.
