@@ -10,6 +10,7 @@ async function sendMessage(chatId, message) {
   let url = `${TELEGRAM_URI}/sendMessage?chatId=${chatId}?text=${message}`;
 
   console.log('url: ' + url);
+  console.log('text: ' + message);
 
   await axios.post(url, {
     chat_id: chatId,
@@ -28,7 +29,7 @@ app.use(
 app.post(`/telegram-webhook-message-${TELEGRAM_API_TOKEN}`, async (req, res) => {
     const { message } = req.body;
 
-    console.log('message: ' + message);
+    console.log('message: ' + JSON.stringify(message));
 
     const messageText = message?.text?.toLowerCase()?.trim();
     const chatId = message?.chat?.id;
