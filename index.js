@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios')
 
 const TELEGRAM_API_TOKEN = process.env.TELEGRAM_API_TOKEN
 const TELEGRAM_URI = `https://api.telegram.org/bot${TELEGRAM_API_TOKEN}`
@@ -7,9 +8,10 @@ const PORT = process.env.PORT || 3000
 
 async function sendMessage(chatId, message) {
   let url = `${TELEGRAM_URI}/sendMessage?chatId=${chatId}?text=${message}`;
-  return await fetch(url, {
-      method: 'POST'
-  });
+  await axios.post(url, {
+    chat_id: chatId,
+    text: message
+  })
 }
 
 const app = express()
@@ -29,8 +31,9 @@ app.post(`/telegram-webhook-message-${TELEGRAM_API_TOKEN}`, async (req, res) => 
       return res.sendStatus(400);
     }
 
-    await sendMessage(chatId, 'I have nothing to say.');
+    await sendMessage(chatId, messageText);
 })
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
