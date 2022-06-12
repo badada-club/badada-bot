@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 3000
 
 async function sendMessage(chatId, message) {
   let url = `${TELEGRAM_URI}/sendMessage?chatId=${chatId}?text=${message}`;
+
+  console.log('url: ' + url);
+
   await axios.post(url, {
     chat_id: chatId,
     text: message
@@ -24,6 +27,8 @@ app.use(
 )
 app.post(`/telegram-webhook-message-${TELEGRAM_API_TOKEN}`, async (req, res) => {
     const { message } = req.body;
+
+    console.log('message: ' + message);
 
     const messageText = message?.text?.toLowerCase()?.trim();
     const chatId = message?.chat?.id;
