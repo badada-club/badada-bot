@@ -15,7 +15,7 @@ async function sendMessage(chatId, message) {
   await axios.post(url, {
     chat_id: chatId,
     text: message
-  })
+  });
 }
 
 const app = express()
@@ -38,6 +38,8 @@ app.post(`/telegram-webhook-message-${TELEGRAM_API_TOKEN}`, async (req, res) => 
     }
 
     await sendMessage(chatId, messageText);
+
+    res.send('Done');
 })
 
 app.listen(PORT, () => {
