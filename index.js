@@ -1,13 +1,13 @@
 import express from 'express'
 import axios from 'axios'
 
-import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION /*, WEBHOOK_ACTION_DEV */ } from './config.js'
+import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js'
 const PORT = process.env.PORT || 3000
 
 async function sendMessage(chatId, message) {
   await sendRequest('sendMessage', {
     chat_id: chatId,
-    text: message // encodeURIComponent(message)
+    text: message
   });
 }
 async function sendRequest(method, params) {
@@ -24,7 +24,6 @@ app.use(
   })
 )
 
-// app.post(`/${WEBHOOK_ACTION_DEV}`, async (req, res) => {
 app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
     const { message } = req.body;
 
