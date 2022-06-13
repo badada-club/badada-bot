@@ -28,6 +28,8 @@ app.use(
 app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
     const { message } = req.body;
 
+    console.log('Webhook message received:' + JSON.stringify(message));
+
     if(!message)
       return res.sendStatus(400);
 
