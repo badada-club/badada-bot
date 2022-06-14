@@ -57,7 +57,7 @@ app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
     return res.send('The request contains neither message nor quieries.');
 })
 
-function handleMessage(message, res) {
+async function handleMessage(message, res) {
     console.log('Webhook message received:' + JSON.stringify(message));
 
     if(!message)
@@ -111,7 +111,7 @@ function handleMessage(message, res) {
 
     res.send('Done');
 }
-function handleCallbackQuery(callback_query) {
+async function handleCallbackQuery(callback_query) {
     console.log('Webhook callback_query received:' + JSON.stringify(callback_query));
     console.log(callback_query.data);
     return res.send('Done');
