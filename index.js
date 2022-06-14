@@ -5,10 +5,11 @@ import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js
 const PORT = process.env.PORT || 3000
 
 async function sendMessage(chatId, message) {
-  await sendRequest('sendMessage', {
-    chat_id: chatId,
-    text: message
-  });
+  if(message) // Telegram does no accept empty messages
+    await sendRequest('sendMessage', {
+      chat_id: chatId,
+      text: message
+    });
 }
 async function sendRequest(method, params) {
   let url = `${TELEGRAM_URI}/${method}`;
@@ -55,7 +56,7 @@ app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
           await sendMessage(chatId, 'Hey dude!');
           break;
         case 'echo':
-          await sendMessage(chatId, text);
+          await sendMessage(chatId, text.substring(params[0].length + 1));
           break;
       }
     }
