@@ -30,16 +30,16 @@ app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
     console.log('Webhook message received:' + JSON.stringify(message));
 
     if(!message)
-      return res.sendStatus(400);
+      return res.send('Failure');
 
     const text = message.text;
     const chat = message.chat;
     if(!chat)
-      return res.sendStatus(400);
+      return res.send('Failure');
 
     const chatId = chat.id;
     if(!chatId)
-      return res.sendStatus(400);
+      return res.send('Failure');
 
     const params = text.split(' ');
 
