@@ -55,7 +55,7 @@ app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
           await sendMessage(chatId, 'Hey dude!');
           break;
         case 'echo':
-          await sendMessage(chatId, text.substring(params[0].length));
+          await sendMessage(chatId, text);
           break;
       }
     }
