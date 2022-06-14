@@ -111,7 +111,7 @@ async function handleMessage(message, res) {
 
     res.send('Done');
 }
-async function handleCallbackQuery(callback_query) {
+async function handleCallbackQuery(callback_query, res) {
     console.log('Webhook callback_query received:' + JSON.stringify(callback_query));
     console.log(callback_query.data);
     return res.send('Done');
