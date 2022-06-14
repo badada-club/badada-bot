@@ -49,8 +49,15 @@ app.use(
 )
 
 app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
-    const { message } = req.body;
+    const { message, callback_query } = req.body;
+    if(message)
+        return handleMessage(message, res);
+    else if(callback_query)
+        return handleCallbackQuery(callback_query, res);
+    return res.send('The request contains neither message nor quieries.');
+})
 
+function handleMessage(message, res) {
     console.log('Webhook message received:' + JSON.stringify(message));
 
     if(!message)
@@ -103,7 +110,13 @@ app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
     }
 
     res.send('Done');
-})
+}
+function handleCallbackQuery(callback_query) {
+    console.log('Webhook callback_query received:' + JSON.stringify(callback_query));
+    console.log(callback_query.data);
+    return res.send('Done');
+}
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}.`)
