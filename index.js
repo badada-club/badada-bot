@@ -2,7 +2,7 @@
 
 import express from 'express'
 import { TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js'
-import { Guard } from './utils.js'
+import { Guard, tryParseJSON } from './utils.js'
 import { RequestBuilderFactory } from './request-builders/request-builder-factory.js'
 import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js'
 
