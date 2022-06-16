@@ -4,7 +4,6 @@ import express from 'express'
 import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js'
 import { Guard, tryParseJSON } from './utils.js'
 import { RequestBuilderFactory } from './request-builders/request-builder-factory.js'
-import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js'
 import { RequestHandler } from './request-handlers/request-handler.js'
 
 const PORT = process.env.PORT || 3000

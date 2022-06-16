@@ -1,3 +1,4 @@
+import { RequestHandlerFactory } from './request-handler-factory.js'
 export class RequestHandler {
     static async handle(request, res) {
         if(request && request.resource && request.method) {
