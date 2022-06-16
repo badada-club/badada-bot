@@ -1,12 +1,12 @@
-import { sendMessage } from "../telegram.js";
-import { Guard } from "../utils.js";
+import { sendMessage } from "../telegram-methods.js";
+import { Command, Guard } from "../utils.js";
 import { RequestBuilder } from "./request-builder.js";
 
 export class EventRequestBuilder extends RequestBuilder {
-    _questions = [
+    _questions: Question[] = [
         {
             question: 'Укажи дату в формате YYYY-MM-DD, пожалуйста.',
-            apply: async (builder, answer) => {
+            apply: async (builder: EventRequestBuilder, answer: string) => {
                 const ms = Date.parse(answer);
                 if(!ms) {
                     await sendMessage(this.chatId, 'Это не похоже на дату. Пожалуйста, укажи дату в формате YYYY-MM-DD.');
@@ -19,7 +19,7 @@ export class EventRequestBuilder extends RequestBuilder {
         },
         {
             question: 'Укажи стоимость.',
-            apply: async (builder, answer) => {
+            apply: async (builder: EventRequestBuilder, answer: string) => {
                 const cost = parseInt(answer);
                 if(Number.isNaN(cost)) {
                     await sendMessage(this.chatId, 'Это не похоже на число. Пожалуйста, укажи корректную стоимость.');
@@ -33,14 +33,14 @@ export class EventRequestBuilder extends RequestBuilder {
 
     ];
 
-    _date;
-    _cost;
+    _date: Date;
+    _cost: number;
     _currentIndex = -1;
 
-    constructor(chatId) {
+    constructor(chatId: number) {
         super(chatId);
     }
-    async addMessage(message) {
+    override async addMessage(message: string) {
         if(this._status === 'down') {
             this._status = 'up';
             this._currentIndex = 0;
@@ -67,7 +67,7 @@ export class EventRequestBuilder extends RequestBuilder {
             }    
         }
     }
-    async addCommand(command) {
+    override async addCommand(command: Command) {
         switch(command) {
             case 'cancel':
                 this._status = 'canceled';
@@ -76,4 +76,9 @@ export class EventRequestBuilder extends RequestBuilder {
     // async terminate() {
     //     await sendMessage('Извини, друг, сервер отключился... Начни заново, пожалуйста.');
     // }
+}
+
+export interface Question {
+    question: string,
+    apply: (builder: EventRequestBuilder, answer: string) => Promise<boolean>
 }
