@@ -1,0 +1,13 @@
+{
+    "configurations": [
+        {
+                "type": "node",
+                "request": "launch",
+                "name": "index.js",
+                "skipFiles": [
+                        "<node_internals>/**"
+                ],
+                "program": "${workspaceFolder}\\index.js"
+        }
+    ]
+}

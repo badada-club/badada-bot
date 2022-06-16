@@ -1,16 +1,22 @@
 {
-  "name": "badada-bot-server",
-  "version": "0.1.0",
-  "description": "An app responsible for handling requests from the 'Badata Events' Telegram bot.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "keywords": [],
-  "author": "Badata IT",
-  "license": "ISC",
-
-  "engines": {
-    "node": "16.x"
-  }
+    "name": "badada-bot",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "An app responsible for communitating with the 'Badada' Telegram bot.",
+    "main": "index.js",
+    "scripts": {
+        "set-web-hook": "node set-web-hook.js",
+        "start": "npm run set-web-hook && node index.js"
+    },
+    "keywords": [],
+    "author": "Badata IT",
+    "license": "ISC",
+    "engines": {
+        "node": "16.x"
+    },
+    "dependencies": {
+        "axios": "^0.27.2",
+        "dotenv": "^16.0.1",
+        "express": "^4.18.1"
+    }
 }
