@@ -1,7 +1,7 @@
 'use strict'
 
 import axios from 'axios'
-import { TELEGRAM_URI } from './config.js'
+import { TELEGRAM_API_URI } from './config.js'
 
 export async function sendMessage(chatId, message) {
     if(message) // Telegram does no accept empty messages
@@ -33,6 +33,6 @@ export async function sendInlineKeyboardMessage(chatId, message, inlineButtons) 
         });
 }
 export async function sendRequest(method, params) {
-    let url = `${TELEGRAM_URI}/${method}`;
+    let url = `${TELEGRAM_API_URI}/${method}`;
     await axios.post(url, params);
 }

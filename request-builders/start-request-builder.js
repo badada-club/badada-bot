@@ -1,14 +1,11 @@
 import { RequestBuilder } from "./request-builder.js";
 
 export class StartRequestBuilder extends RequestBuilder {
-    _chatId = null;
-
-    constructor(messageId, chatId) {
-        super(messageId);
-        this._chatId = chatId;
+    constructor(chatId) {
+        super(chatId);
     }
 
-    async start(arg) {
+    async addMessage(arg) {
         this._status = 'ready';
         this._request = {
             resource: 'message',

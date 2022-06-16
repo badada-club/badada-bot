@@ -1,17 +1,19 @@
 export class RequestBuilder {
     _status = 'down';
     _request;
-    _messageId;
+    _chatId;
 
     get status() { return this._status; }
     get request() { return this._request; }
-    get messageId() { return this._messageId; }
+    get chatId() { return this._chatId; }
 
-    constructor(messageId) {
-        this._messageId = messageId;
+    constructor(chatId) {
+        this._chatId = chatId;
     }
     
-    async start(arg) { }
     async addMessage(message) { }
     async addCommand(command) { }
+    // async terminate() {
+    //     this._status = 'terminated';
+    // }
 }

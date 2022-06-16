@@ -1,5 +1,8 @@
 import { RequestHandler } from "./request-handler.js";
 
-export class EventRequestHandler extends RequestHandler {
+export class EventsRequestHandler extends RequestHandler {
+    async post(request) {
+        await sendMessage(request.data.chatId, JSON.stringify(request));
+    }
 }
 

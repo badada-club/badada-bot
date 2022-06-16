@@ -1,11 +1,11 @@
-import { EventRequestHandler } from './event-request-handler.js'
+import { EventsRequestHandler } from './event-request-handler.js'
 import { MessageRequestHandler } from './message-request-handler.js'
 
 export const RequestHandlerFactory = {
-    get: (resource) => {
+    create: (resource) => {
         switch(resource) {
-            case 'event':
-                return new EventRequestHandler();
+            case 'events':
+                return new EventsRequestHandler();
             case 'message':
                 return new MessageRequestHandler();
             default:
