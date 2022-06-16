@@ -1,16 +1,16 @@
-'use strict'
-
-import express from 'express'
+import express, { Express, NextFunction, Request, Response } from 'express'
 import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js'
-import { Guard, tryParseJSON } from './utils.js'
-import { RequestBuilderFactory } from './request-builders/request-builder-factory.js'
-import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js'
+import { Command, Guard, TelegramRequest, tryParseJSON } from './utils'
+import { RequestBuilderFactory } from './request-builders/request-builder-factory'
+import { RequestHandlerFactory } from './request-handlers/request-handler-factory'
+import { Message as TelegramMessage, CallbackQuery as TelegramCallbackQuery } from './telegram-types'
+import { RequestBuilder } from './request-builders/request-builder'
 
-const PORT = process.env.PORT || 3000
+const PORT: string | number = process.env.PORT || 3000
 
-const app = express()
+const app: Express = express()
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', TELEGRAM_URI);
     res.header('Access-Control-Allow-Methods', 'POST');
     next();
@@ -20,7 +20,7 @@ app.use(express.urlencoded({
     extended: true
 }))
 
-app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
+app.post(`/${WEBHOOK_ACTION}`, async (req: Request, res: Response) => {
     const { message, callback_query } = req.body;
     if(message)
         await handleMessage(message, res);
@@ -30,7 +30,7 @@ app.post(`/${WEBHOOK_ACTION}`, async (req, res) => {
         res.sendStatus(400);
 });
 
-app.use((err, req, res, next) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error('Exception thrown while handling the request...');
     if(err) {
         console.error(err.toString());
@@ -38,7 +38,7 @@ app.use((err, req, res, next) => {
     }
     res.status(500);
 });
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
     res.sendStatus(404);
 }); 
 
@@ -48,7 +48,7 @@ app.listen(PORT, () => {
 
 const rbCache = new Map();
 
-async function handleMessage(message, res) {
+async function handleMessage(message: TelegramMessage, res: Response) {
     Guard.requires(!!message);
     console.log('handleMessage: ' + JSON.stringify(message));
 
@@ -68,10 +68,10 @@ async function handleMessage(message, res) {
     res.sendStatus(200);
 }
 
-async function buildRequest(chatId, text) {
+async function buildRequest(chatId: number, text: string) {
     let requestBuilder = rbCache.get(chatId);
     const trimmedText = text.trimStart();
-    let command = null;
+    let command: Command | null = null;
     if(trimmedText.startsWith('/'))
         command = getCommand(trimmedText);
     if(requestBuilder) {
@@ -96,7 +96,7 @@ async function buildRequest(chatId, text) {
     }
 }
 
-async function handleRequest(request, res) {
+async function handleRequest(request: TelegramRequest, res: Response) {
     if(request && request.resource && request.method) {
         const handler = RequestHandlerFactory.create(request.resource);
         switch(request.method) {
@@ -115,7 +115,7 @@ async function handleRequest(request, res) {
     }
 }
 
-function getRequest(requestBuilder) {
+function getRequest(requestBuilder: RequestBuilder): TelegramRequest | undefined {
     switch(requestBuilder.status) {
         case 'ready':
         case 'canceled':
@@ -125,7 +125,7 @@ function getRequest(requestBuilder) {
     }
 }
 
-function getCommand(messageText) {
+function getCommand(messageText: string): Command {
     const trimmedText = messageText.trimStart();
     let firstSpace = trimmedText.indexOf(' ');
     if(firstSpace === -1)
@@ -133,21 +133,21 @@ function getCommand(messageText) {
     const firstParam = trimmedText.substring(0, firstSpace);
     const atLocation = firstParam.lastIndexOf('@'); // Commands may end with the bot's name, see https://core.telegram.org/bots#commands
     const botName = atLocation !== -1 ? firstParam.substring(atLocation + 1) : null;
-    const command = firstParam.substring(1, botName === TELEGRAM_BOT_USERNAME ? atLocation : firstParam.length);
+    const command = firstParam.substring(1, botName === TELEGRAM_BOT_USERNAME ? atLocation : firstParam.length) as Command;
     return command;
 }
 
-async function handleCallbackQuery(callback_query, res) {
+async function handleCallbackQuery(callback_query: TelegramCallbackQuery, res: Response) {
     console.log('Webhook callback_query received:' + JSON.stringify(callback_query));
 
     const chatId = callback_query?.message?.chat?.id;
     if(chatId) {
-        requestBuilder = rbCache.get(chatId);
+        const requestBuilder = rbCache.get(chatId);
         if(requestBuilder) {
             await requestBuilder.addQuery(callback_query);
             const request = getRequest(requestBuilder);
             if(request)
-                await handleRequest(request);
+                await handleRequest(request, res);
         }   
     }
 
