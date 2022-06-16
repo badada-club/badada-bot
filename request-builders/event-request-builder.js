@@ -43,7 +43,8 @@ export class EventRequestBuilder extends RequestBuilder {
     async addMessage(message) {
         if(this._status === 'down') {
             this._status = 'up';
-            this._currentIndex = 0;    
+            this._currentIndex = 0;
+            sendMessage(this._chatId, this._questions[this._currentIndex].question);
         } else {
             Guard.requires(this._status === 'up');
             Guard.requires(this._currentIndex < this._questions.length);
@@ -60,6 +61,8 @@ export class EventRequestBuilder extends RequestBuilder {
                             cost: this._cost
                         }
                     }
+                } else {
+                    sendMessage(this._chatId, this._questions[this._currentIndex].question);
                 }
             }    
         }
