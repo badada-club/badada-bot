@@ -59,7 +59,7 @@ async function handleMessage(message, res) {
         return res.status(400).send('The text of the received message is empty.');
     const chatId = message.chat?.id;
     if(!chatId)
-        return res.status(400).send('The the received message does not contain the chat id.');
+        return res.status(400).send('The received message does not contain the chat id.');
 
     const request = await buildRequest(chatId, text)
     if(request)
