@@ -4,7 +4,7 @@ import express from 'express'
 import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js'
 import { Guard, tryParseJSON } from './utils.js'
 import { RequestBuilderFactory } from './request-builders/request-builder-factory.js'
-import { RequestHandler } from './request-handlers/request-handler.js'
+import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js'
 
 const PORT = process.env.PORT || 3000
 
@@ -63,7 +63,7 @@ async function handleMessage(message, res) {
 
     const request = await buildRequest(chatId, text)
     if(request)
-        await RequestHandler.handle(request);
+        await handleRequest(request, res);
 
     res.sendStatus(200);
 }
@@ -93,6 +93,25 @@ async function buildRequest(chatId, text) {
         }    
     } else {
         return tryParseJSON(trimmedText);
+    }
+}
+
+async function handleRequest(request, res) {
+    if(request && request.resource && request.method) {
+        const handler = RequestHandlerFactory.create(request.resource);
+        switch(request.method) {
+            case 'post':
+                handler.post && await handler.post(request);
+                break;
+            case 'get':
+                handler.get && await handler.get(request);
+                break;
+            case 'put':
+                handler.put && await handler.put(request);
+                break;
+            default:
+                return res.sendStatus(400);
+        }
     }
 }
 
