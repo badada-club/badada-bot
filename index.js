@@ -72,7 +72,7 @@ async function buildRequest(chatId, text) {
     let requestBuilder = rbCache.get(chatId);
     const trimmedText = text.trimStart();
     let command = null;
-    trimmedText.startsWith('/')
+    if(trimmedText.startsWith('/'))
         command = getCommand(trimmedText);
     if(requestBuilder) {
         if(command) {

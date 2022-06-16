@@ -1,3 +1,4 @@
+import { sendMessage } from "../telegram.js";
 import { RequestHandler } from "./request-handler.js";
 
 export class EventsRequestHandler extends RequestHandler {

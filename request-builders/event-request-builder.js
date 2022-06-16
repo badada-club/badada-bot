@@ -44,24 +44,25 @@ export class EventRequestBuilder extends RequestBuilder {
         if(this._status === 'down') {
             this._status = 'up';
             this._currentIndex = 0;    
-        }
-        Guard.requires(this._status === 'up');
-        Guard.requires(this._currentIndex < this._questions.length);
-        if(await this._questions[this._currentIndex].apply(this, message)) {
-            this._currentIndex++;
-            if(this._currentIndex >= this._questions.length) {
-                this._status = 'ready';
-                this._request = {
-                    resource: 'events',
-                    method: 'post',
-                    data: {
-                        date: this._date,
-                        cost: this._cost
+        } else {
+            Guard.requires(this._status === 'up');
+            Guard.requires(this._currentIndex < this._questions.length);
+            if(await this._questions[this._currentIndex].apply(this, message)) {
+                this._currentIndex++;
+                if(this._currentIndex >= this._questions.length) {
+                    this._status = 'ready';
+                    this._request = {
+                        resource: 'events',
+                        method: 'post',
+                        data: {
+                            chatId: this._chatId,
+                            date: this._date,
+                            cost: this._cost
+                        }
                     }
                 }
-            }
+            }    
         }
-
     }
     async addCommand(command) {
         switch(command) {
