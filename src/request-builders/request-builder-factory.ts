@@ -1,8 +1,8 @@
-import { EchoRequestBuilder } from "./echo-request-builder.js";
-import { StartRequestBuilder } from "./start-request-builder.js";
-import { EventRequestBuilder } from "./event-request-builder.js";
-import { Command } from "../utils.js";
-import { RequestBuilder } from "./request-builder.js";
+import { Command } from '../utils.js';
+import { EchoRequestBuilder } from './echo-request-builder.js';
+import { EventRequestBuilder } from './event-request-builder.js';
+import { RequestBuilder } from './request-builder.js';
+import { StartRequestBuilder } from './start-request-builder.js';
 
 export const RequestBuilderFactory = {
     create: (command: Command, chatId: number): RequestBuilder | undefined => {
@@ -15,4 +15,4 @@ export const RequestBuilderFactory = {
                 return new EventRequestBuilder(chatId);    
         }
     }
-}
+};

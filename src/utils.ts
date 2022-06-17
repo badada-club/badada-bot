@@ -3,7 +3,7 @@ export const Guard = {
         if(!condition)
             console.error(message ?? 'The required code condition is not met.');
     }
-}
+};
 
 export function tryParseJSON(json: string): any {
     try {

@@ -1,4 +1,4 @@
-import { RequestBuilder } from "./request-builder.js";
+import { RequestBuilder } from './request-builder.js';
 
 export class StartRequestBuilder extends RequestBuilder {
     constructor(chatId: number) {
@@ -14,6 +14,6 @@ export class StartRequestBuilder extends RequestBuilder {
                 chatId: this._chatId,
                 text: 'Hey Badada Buddy!'
             }
-        }
+        };
     }
 }

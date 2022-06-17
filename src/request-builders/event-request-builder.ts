@@ -1,6 +1,6 @@
-import { sendMessage } from "../telegram-methods.js";
-import { Command, Guard } from "../utils.js";
-import { RequestBuilder } from "./request-builder.js";
+import { sendMessage } from '../telegram-methods.js';
+import { Command, Guard } from '../utils.js';
+import { RequestBuilder } from './request-builder.js';
 
 export class EventRequestBuilder extends RequestBuilder {
     _questions: Question[] = [
@@ -60,7 +60,7 @@ export class EventRequestBuilder extends RequestBuilder {
                             date: this._date,
                             cost: this._cost
                         }
-                    }
+                    };
                 } else {
                     sendMessage(this._chatId, this._questions[this._currentIndex].question);
                 }

@@ -1,5 +1,5 @@
-import { MessageRequest } from "../request-handlers/message-request-handler.js";
-import { RequestBuilder } from "./request-builder.js";
+import { MessageRequest } from '../request-handlers/message-request-handler.js';
+import { RequestBuilder } from './request-builder.js';
 
 export class EchoRequestBuilder extends RequestBuilder {
     override _request: MessageRequest;
@@ -17,6 +17,6 @@ export class EchoRequestBuilder extends RequestBuilder {
                 chatId: this._chatId,
                 text: arg
             }
-        }
+        };
     }
 }
