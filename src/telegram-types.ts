@@ -8,7 +8,6 @@ export interface Message {
 export interface Chat {
     id: number
 }
-
 export interface CallbackQuery {
     message: Message
 }
