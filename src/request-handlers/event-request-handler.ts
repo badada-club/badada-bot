@@ -1,6 +1,6 @@
-import { sendMessage } from "../telegram-methods.js";
-import { TelegramRequest } from "../utils.js";
-import { RequestHandler } from "./request-handler.js";
+import { sendMessage } from '../telegram-methods.js';
+import { TelegramRequest } from '../utils.js';
+import { RequestHandler } from './request-handler.js';
 
 export interface EventRequestData {
     chatId: number

@@ -1,5 +1,5 @@
-import axios from 'axios'
-import { TELEGRAM_API_URI } from './config.js'
+import axios from 'axios';
+import { TELEGRAM_API_URI } from './config.js';
 import { Method as TelegramMethod } from './telegram-types.js';
 
 export async function sendMessage(chatId: number, message: string) {
@@ -32,6 +32,6 @@ export async function sendInlineKeyboardMessage(chatId: number, message: string,
         });
 }
 export async function sendRequest(method: TelegramMethod, params: any) {
-    let url = `${TELEGRAM_API_URI}/${method}`;
+    const url = `${TELEGRAM_API_URI}/${method}`;
     await axios.post(url, params);
 }

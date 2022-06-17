@@ -1,24 +1,24 @@
-import express, { Express, NextFunction, Request, Response } from 'express'
-import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js'
-import { Command, Guard, TelegramRequest, tryParseJSON } from './utils.js'
-import { RequestBuilderFactory } from './request-builders/request-builder-factory.js'
-import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js'
-import { Message as TelegramMessage, CallbackQuery as TelegramCallbackQuery } from './telegram-types.js'
-import { RequestBuilder } from './request-builders/request-builder.js'
+import express, { Express, NextFunction, Request, Response } from 'express';
+import { TELEGRAM_BOT_USERNAME, TELEGRAM_URI, WEBHOOK_ACTION } from './config.js';
+import { RequestBuilderFactory } from './request-builders/request-builder-factory.js';
+import { RequestBuilder } from './request-builders/request-builder.js';
+import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js';
+import { CallbackQuery as TelegramCallbackQuery, Message as TelegramMessage } from './telegram-types.js';
+import { Command, Guard, TelegramRequest, tryParseJSON } from './utils.js';
 
-const PORT: string | number = process.env.PORT || 3000
+const PORT: string | number = process.env.PORT || 3000;
 
-const app: Express = express()
+const app: Express = express();
 
 app.use((req: Request, res: Response, next: NextFunction) => {
     res.header('Access-Control-Allow-Origin', TELEGRAM_URI);
     res.header('Access-Control-Allow-Methods', 'POST');
     next();
 });
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({
     extended: true
-}))
+}));
 
 app.post(`/${WEBHOOK_ACTION}`, async (req: Request, res: Response) => {
     const { message, callback_query } = req.body;
@@ -43,7 +43,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 }); 
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}.`)
+    console.log(`Server running on port ${PORT}.`);
 });
 
 const rbCache = new Map();
@@ -61,7 +61,7 @@ async function handleMessage(message: TelegramMessage, res: Response) {
     if(!chatId)
         return res.status(400).send('The received message does not contain the chat id.');
 
-    const request = await buildRequest(chatId, text)
+    const request = await buildRequest(chatId, text);
     if(request)
         await handleRequest(request, res);
 

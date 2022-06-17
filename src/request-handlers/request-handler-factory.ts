@@ -1,6 +1,6 @@
 import { Resource } from '../utils.js';
-import { EventsRequestHandler } from './event-request-handler.js'
-import { MessageRequestHandler } from './message-request-handler.js'
+import { EventsRequestHandler } from './event-request-handler.js';
+import { MessageRequestHandler } from './message-request-handler.js';
 import { RequestHandler } from './request-handler.js';
 
 export const RequestHandlerFactory = {
@@ -14,4 +14,4 @@ export const RequestHandlerFactory = {
                 throw new Error();
         }
     }
-}
+};

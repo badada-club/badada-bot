@@ -1,4 +1,4 @@
-import { Command, TelegramRequest } from "../utils.js";
+import { Command, TelegramRequest } from '../utils.js';
 
 export type RequestBuilderStatus = 'down' | 'up' | 'canceled' | 'terminated' | 'ready'
 
