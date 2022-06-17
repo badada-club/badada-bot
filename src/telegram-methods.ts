@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { TELEGRAM_API_URI } from './config.js'
-import { Method as TelegramMethod } from './telegram-types';
+import { Method as TelegramMethod } from './telegram-types.js';
 
 export async function sendMessage(chatId: number, message: string) {
     if(message) // Telegram does no accept empty messages

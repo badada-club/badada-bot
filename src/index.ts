@@ -1,10 +1,10 @@
 import express, { Express, NextFunction, Request, Response } from 'express'
 import { TELEGRAM_URI, TELEGRAM_BOT_USERNAME, WEBHOOK_ACTION } from './config.js'
-import { Command, Guard, TelegramRequest, tryParseJSON } from './utils'
-import { RequestBuilderFactory } from './request-builders/request-builder-factory'
-import { RequestHandlerFactory } from './request-handlers/request-handler-factory'
-import { Message as TelegramMessage, CallbackQuery as TelegramCallbackQuery } from './telegram-types'
-import { RequestBuilder } from './request-builders/request-builder'
+import { Command, Guard, TelegramRequest, tryParseJSON } from './utils.js'
+import { RequestBuilderFactory } from './request-builders/request-builder-factory.js'
+import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js'
+import { Message as TelegramMessage, CallbackQuery as TelegramCallbackQuery } from './telegram-types.js'
+import { RequestBuilder } from './request-builders/request-builder.js'
 
 const PORT: string | number = process.env.PORT || 3000
 
