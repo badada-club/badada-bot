@@ -1,10 +1,10 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
-import { TELEGRAM_BOT_USERNAME, TELEGRAM_URI, WEBHOOK_ACTION } from './config.js';
-import { RequestBuilderFactory } from './request-builders/request-builder-factory.js';
-import { RequestBuilder } from './request-builders/request-builder.js';
+import { TELEGRAM_URI, WEBHOOK_ACTION } from './config.js';
 import { RequestHandlerFactory } from './request-handlers/request-handler-factory.js';
+import { RequestHandler } from './request-handlers/request-handler.js';
 import { CallbackQuery as TelegramCallbackQuery, Message as TelegramMessage } from './telegram-types.js';
-import { Command, Guard, TelegramRequest, tryParseJSON } from './utils.js';
+import { Command, getChatId, getCommand, sendMessage } from './telegram-utils.js';
+import { Guard } from './utils.js';
 
 const PORT: string | number = process.env.PORT || 3000;
 
@@ -46,7 +46,7 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}.`);
 });
 
-const rbCache = new Map();
+const requestHandlerCache = new Map<number, RequestHandler>();
 
 async function handleMessage(message: TelegramMessage, res: Response) {
     Guard.requires(!!message);
@@ -54,116 +54,68 @@ async function handleMessage(message: TelegramMessage, res: Response) {
 
     if(message.via_bot)
         return res.sendStatus(200);
-    const text = message.text;
-    if(!text)
-        return res.status(400).send('The text of the received message is empty.');
-    const chatId = message.chat?.id;
+    const chatId = getChatId(message);
     if(!chatId)
         return res.status(400).send('The received message does not contain the chat id.');
-
-    const request = await buildRequest(chatId, text);
-    if(request)
-        await handleRequest(request, res);
-
-    res.sendStatus(200);
-}
-
-async function buildRequest(chatId: number, text: string) {
-    let requestBuilder = rbCache.get(chatId);
+    const text = message.text;
+    if(!text)
+        return res.status(400).send('The text of the received message is empty.');        
     const trimmedText = text.trimStart();
-    let command: Command | null = null;
-    if(trimmedText.startsWith('/'))
+    let command: Command | undefined = undefined;
+    let commandArg: string | undefined = undefined;
+    if(trimmedText.startsWith('/')) {
         command = getCommand(trimmedText);
-    if(requestBuilder) {
-        if(command) {
-            await requestBuilder.addCommand(command);
-            return getRequest(requestBuilder);
-        } else {
-            await requestBuilder.addMessage(trimmedText);
-            return getRequest(requestBuilder);    
-        }
-    } else if(command) {
-        requestBuilder = RequestBuilderFactory.create(command, chatId);
-        if(requestBuilder) {
-            await requestBuilder.addMessage(trimmedText.substring(command.length + 1));
-            const request = getRequest(requestBuilder);
-            if(!request)
-                rbCache.set(chatId, requestBuilder);
-            return request;
-        }    
+        if(command)
+            commandArg = trimmedText.substring(command.length + 1);
+    }
+    const handler = requestHandlerCache.get(chatId);
+    if(handler) {
+        let additionResult = false;
+        if(command)
+            additionResult = await handler.addCommand(command, commandArg);
+        else
+            additionResult = await handler.addMessage(text);
+        if(additionResult)
+            requestHandlerCache.delete(chatId);
     } else {
-        return tryParseJSON(trimmedText);
-    }
-}
-
-async function handleRequest(request: TelegramRequest, res: Response) {
-    if(request && request.resource && request.method) {
-        const handler = RequestHandlerFactory.create(request.resource);
-        switch(request.method) {
-            case 'post':
-                handler.post && await handler.post(request);
-                break;
-            case 'get':
-                handler.get && await handler.get(request);
-                break;
-            case 'put':
-                handler.put && await handler.put(request);
-                break;
-            default:
-                return res.sendStatus(400);
+        if(command) {
+            const newHandler = RequestHandlerFactory.create(command, chatId);
+            if(newHandler) {
+                if(!(await newHandler.start(commandArg)))
+                    requestHandlerCache.set(chatId, newHandler);
+            }   
+        } else {
+            await sendMessage(chatId, 'Введи какую-нибудь команду, пожалуйста.');
         }
     }
-}
-
-function getRequest(requestBuilder: RequestBuilder): TelegramRequest | undefined {
-    switch(requestBuilder.status) {
-        case 'ready':
-        case 'canceled':
-        case 'terminated':
-            rbCache.delete(requestBuilder.chatId);
-            return requestBuilder.request;
-    }
-}
-
-function getCommand(messageText: string): Command {
-    const trimmedText = messageText.trimStart();
-    let firstSpace = trimmedText.indexOf(' ');
-    if(firstSpace === -1)
-        firstSpace = trimmedText.length;
-    const firstParam = trimmedText.substring(0, firstSpace);
-    const atLocation = firstParam.lastIndexOf('@'); // Commands may end with the bot's name, see https://core.telegram.org/bots#commands
-    const botName = atLocation !== -1 ? firstParam.substring(atLocation + 1) : null;
-    const command = firstParam.substring(1, botName === TELEGRAM_BOT_USERNAME ? atLocation : firstParam.length) as Command;
-    return command;
+    return res.sendStatus(200);
 }
 
 async function handleCallbackQuery(callback_query: TelegramCallbackQuery, res: Response) {
-    console.log('Webhook callback_query received:' + JSON.stringify(callback_query));
+    console.log('Webhook callback_query received: ' + JSON.stringify(callback_query));
 
     const chatId = callback_query?.message?.chat?.id;
     if(chatId) {
-        const requestBuilder = rbCache.get(chatId);
-        if(requestBuilder) {
-            await requestBuilder.addQuery(callback_query);
-            const request = getRequest(requestBuilder);
-            if(request)
-                await handleRequest(request, res);
+        const requestHandler = requestHandlerCache.get(chatId);
+        if(requestHandler) {
+            if(await requestHandler.addQuery(callback_query))
+                requestHandlerCache.delete(chatId);
         }   
     }
 
-    res.send('OK');
+    return res.sendStatus(200);
 }
 
 // async function cleanup() {
 //     console.log('Cleaning up...');
-//     for(builder of rbCache.values())
-//         await builder.terminate();
-//     rbCache.clear();
+//     for(const handler of requestHandlerCache.values())
+//         await handler.terminate();
+//     requestHandlerCache.clear();
 //     console.log('Done.');
 // }
 
 // process.on('uncaughtExceptionMonitor', async (e) => {
-//     console.error(`Process terminated due an uncaught exception...`);
+//     console.error('Process terminated due an uncaught exception...');
 //     if(e) {
 //         console.error(e.toString());
 //         console.error(e.stack);
@@ -171,7 +123,7 @@ async function handleCallbackQuery(callback_query: TelegramCallbackQuery, res: R
 //     await cleanup();
 // });
 
-// [`SIGINT`, `SIGTERM`, 'SIGHUP'].forEach((eventType) => {
+// ['SIGINT', 'SIGTERM', 'SIGHUP'].forEach((eventType) => {
 //     process.on(eventType, async (e) => {
 //         console.error(`Process terminated due to ${eventType} signal.`);
 //         try {

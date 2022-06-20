@@ -12,12 +12,3 @@ export function tryParseJSON(json: string): any {
         return undefined;
     }
 }
-
-export type Command = 'start' | 'echo' | 'new_event' | 'cancel';
-export type Method = 'post' | 'get' | 'put';
-export type Resource = 'events' | 'message';
-export interface TelegramRequest {
-    resource: Resource,
-    method: Method,
-    data?: any
-}

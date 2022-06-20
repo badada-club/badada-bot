@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { TELEGRAM_API_URI } from './config.js';
-import { Method as TelegramMethod } from './telegram-types.js';
+import { TELEGRAM_API_URI, TELEGRAM_BOT_USERNAME } from './config.js';
+import { Message, Method as TelegramMethod } from './telegram-types.js';
 
 export async function sendMessage(chatId: number, message: string) {
     if(message) // Telegram does no accept empty messages
@@ -34,4 +34,29 @@ export async function sendInlineKeyboardMessage(chatId: number, message: string,
 export async function sendRequest(method: TelegramMethod, params: any) {
     const url = `${TELEGRAM_API_URI}/${method}`;
     await axios.post(url, params);
+}
+
+export function getChatId(message: Message): number {
+    return message?.chat?.id;
+}
+export const commands = {
+    start: 'start',
+    echo: 'echo',
+    new_event: 'new_event',
+    cancel: 'cancel'
+};
+export type Command = keyof typeof commands;
+export function getCommand(messageText: string): Command | undefined {
+    const trimmedText = messageText.trimStart();
+    let firstSpace = trimmedText.indexOf(' ');
+    if(firstSpace === -1)
+        firstSpace = trimmedText.length;
+    const firstParam = trimmedText.substring(0, firstSpace);
+    const atLocation = firstParam.lastIndexOf('@'); // Commands may end with the bot's name, see https://core.telegram.org/bots#commands
+    const botName = atLocation !== -1 ? firstParam.substring(atLocation + 1) : null;
+    const command = firstParam.substring(1, botName === TELEGRAM_BOT_USERNAME ? atLocation : firstParam.length);
+    if(Object.values(commands).some(c => c === command))
+        return command as Command;
+    else
+        return undefined;
 }
