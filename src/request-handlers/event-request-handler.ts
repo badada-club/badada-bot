@@ -47,8 +47,8 @@ export class EventRequestHandler extends RequestHandler {
     }
 
     override async start(arg: string): Promise<boolean> {
+        this._currentIndex = 0;
         this._ask(0);
-        this._currentIndex = 1;
         return this._currentIndex >= this._questions.length;
     }
     override async addCommand(command: Command): Promise<boolean> {
