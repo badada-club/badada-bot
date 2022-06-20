@@ -1,10 +1,20 @@
-import { TelegramRequest } from '../utils.js';
+import { CallbackQuery } from '../telegram-types.js';
+import { Command } from '../telegram-utils.js';
 
 export class RequestHandler {
-    async post(request: TelegramRequest) {
+    _chatId: number;
+
+    get chatId() { return this._chatId; }
+
+    constructor(chatId: number) {
+        this._chatId = chatId;
     }
-    async get(request: TelegramRequest) {
-    }
-    async put(request: TelegramRequest) {
-    }
+
+    async start(arg: string | undefined): Promise<boolean> { return false; }
+
+    async addMessage(message: string): Promise<boolean> { return false; }
+    async addCommand(command: Command | undefined, arg: string | undefined): Promise<boolean> { return false; }
+    async addQuery(query: CallbackQuery): Promise<boolean> { return false; }
+
+    // async terminate(arg: string | undefined): Promise<void> { }
 }
