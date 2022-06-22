@@ -27,7 +27,7 @@ app.post(`/${WEBHOOK_ACTION}`, async (req: Request, res: Response) => {
     else if(callback_query)
         await handleCallbackQuery(callback_query, res);
     else
-        res.sendStatus(400);
+        res.send(200 /*400*/).send('400: The request does not contain entities the bot is able to handle.');
 });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -36,10 +36,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
         console.error(err.toString());
         console.error(err.stack);    
     }
-    res.status(500);
+    res.status(200 /*500*/).send('500: Exception thrown while handling the request.');
 });
 app.use((req: Request, res: Response, next: NextFunction) => {
-    res.sendStatus(404);
+    res.status(200 /*404*/).send('404: Unknown route.');
 }); 
 
 app.listen(PORT, () => {
@@ -56,10 +56,10 @@ async function handleMessage(message: TelegramMessage, res: Response) {
         return res.sendStatus(200);
     const chatId = getChatId(message);
     if(!chatId)
-        return res.status(400).send('The received message does not contain the chat id.');
+        return res.status(200 /*400*/).send('400: The received message does not contain the chat id.');
     const text = message.text;
     if(!text)
-        return res.status(400).send('The text of the received message is empty.');        
+        return res.status(200 /*400*/).send('400: The text of the received message is empty.');        
     const trimmedText = text.trimStart();
     let command: Command | undefined = undefined;
     let commandArg: string | undefined = undefined;
