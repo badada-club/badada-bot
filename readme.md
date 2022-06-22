@@ -75,8 +75,12 @@ Node.js - приложение, реализующее функциональн�
 [Heroku Documentation: Getting Started on Heroku with Node.js](https://devcenter.heroku.com/articles/getting-started-with-nodejs#next-steps)
 
 ---
-
 [Heroku Documentation: How to get credentials for Heroku default Postgres DB](https://devcenter.heroku.com/articles/connecting-heroku-postgres#external-connections-ingress):
 ```
 heroku pg:credentials:url DATABASE
 ```
+
+---
+[Youtube: Testing Node Server with Jest and Supertest](https://www.youtube.com/watch?v=FKnzS_icp20)
+
+Getting Started по тестрованию Express с использованием Jest and Supertest. Единственное - import supertest from 'supertest' он шустро меняет на import request from 'supertest' и ничего об этом не говорит))

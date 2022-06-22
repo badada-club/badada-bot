@@ -1,5 +1,5 @@
-import { sendMessage } from '../telegram-utils.js';
-import { RequestHandler } from './request-handler.js';
+import { sendMessage } from '../telegram-utils';
+import { RequestHandler } from './request-handler';
 
 export class StartRequestHandler extends RequestHandler {
     constructor(chatId: number) {

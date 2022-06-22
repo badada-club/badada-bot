@@ -13,6 +13,17 @@
             "runOptions": {
                 "runOn": "folderOpen"
             }
+        },
+        {
+            "type": "npm",
+            "script": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "label": "npm: test",
+            "detail": "jest"
         }
     ]
 }

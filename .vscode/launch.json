@@ -1,13 +1,30 @@
 {
     "configurations": [
         {
+            "name": "npm run start",
             "type": "node",
             "request": "launch",
-            "name": "dist/index.js",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run-script", "start"]
+        },
+        {
+            "name": "npm run test",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run-script", "test"]
+        },
+        {
+            "name": "node dist/index.js",
+            "type": "node",
+            "request": "launch",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\dist\\index.js"
-        }
+            "program": "${workspaceFolder}\\dist\\index.js",
+            "runtimeArgs": ["--experimental-specifier-resolution", "node"]
+        },
     ]
 }

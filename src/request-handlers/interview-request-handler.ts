@@ -1,4 +1,4 @@
-import { RequestHandler } from './request-handler.js';
+import { RequestHandler } from './request-handler';
 
 export interface Question<THandler extends RequestHandler> {
     question: string,

@@ -1,7 +1,7 @@
-import { Command, commands, sendMessage } from '../telegram-utils.js';
-import { Guard } from '../utils.js';
-import { Question } from './interview-request-handler.js';
-import { RequestHandler } from './request-handler.js';
+import { Command, commands, sendMessage } from '../telegram-utils';
+import { Guard } from '../utils';
+import { Question } from './interview-request-handler';
+import { RequestHandler } from './request-handler';
 
 export class EventRequestHandler extends RequestHandler {
     private _questions: Question<EventRequestHandler>[] = [

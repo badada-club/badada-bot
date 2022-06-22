@@ -1,5 +1,5 @@
-import { CallbackQuery } from '../telegram-types.js';
-import { Command } from '../telegram-utils.js';
+import { CallbackQuery } from '../telegram-types';
+import { Command } from '../telegram-utils';
 
 export class RequestHandler {
     _chatId: number;
