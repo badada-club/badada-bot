@@ -25,7 +25,7 @@ app.post(`/${WEBHOOK_ACTION}`, async (req: Request, res: Response) => {
     else if(callback_query)
         await handleCallbackQuery(callback_query, res);
     else
-        res.send(200 /*400*/).send('400: The request does not contain entities the bot is able to handle.');
+        res.status(200 /*400*/).send('400: The request does not contain entities the bot is able to handle.');
 });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
