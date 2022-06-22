@@ -1,7 +1,8 @@
 {
     "env": {
-        "browser": true,
-        "es2021": true
+        "node": true,
+        "es2021": true,
+        "jest": true
     },
     "extends": [
         "eslint:recommended",
@@ -24,6 +25,9 @@
         "no-multiple-empty-lines": [
             "error",
             { "max": 1, "maxBOF": 0, "maxEOF": 0 }
+        ],
+        "no-multi-spaces": [
+            "error"
         ],
         "linebreak-style": [
             "error",

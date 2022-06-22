@@ -1,11 +1,9 @@
 import axios from 'axios';
-import { APP_URI, TELEGRAM_API_URI, WEBHOOK_ACTION } from './config.js';
+import { APP_URI, TELEGRAM_API_URI, WEBHOOK_ACTION } from './config';
 
-async function run() {
+export async function setWebHook(): Promise<boolean> {
     const setWebhookResponse = await axios.post(`${TELEGRAM_API_URI}/setWebhook`, {
         url: `${APP_URI}/${WEBHOOK_ACTION}`
     });
-    process.exitCode = setWebhookResponse.status == 200 ? 0 : 1;
+    return setWebhookResponse.status == 200;
 }
-
-run();

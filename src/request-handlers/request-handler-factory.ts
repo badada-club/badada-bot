@@ -1,8 +1,8 @@
-import { Command } from '../telegram-utils.js';
-import { EchoRequestHandler } from './echo-request-handler.js';
-import { EventRequestHandler } from './event-request-handler.js';
-import { RequestHandler } from './request-handler.js';
-import { StartRequestHandler } from './start-request-handler.js';
+import { Command } from '../telegram-utils';
+import { EchoRequestHandler } from './echo-request-handler';
+import { EventRequestHandler } from './event-request-handler';
+import { RequestHandler } from './request-handler';
+import { StartRequestHandler } from './start-request-handler';
 
 export const RequestHandlerFactory = {
     create: (command: Command, chatId: number): RequestHandler | undefined => {
