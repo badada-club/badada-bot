@@ -24,6 +24,20 @@
             "problemMatcher": [],
             "label": "npm: test",
             "detail": "jest"
+        },
+        {
+            "type": "npm",
+            "script": "test:watch",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "label": "npm: test:watch",
+            "detail": "jest",
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
         }
     ]
 }

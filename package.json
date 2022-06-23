@@ -6,8 +6,10 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "npx tsc",
+        "build:watch": "npx tsc --watch",
         "start": "node --experimental-specifier-resolution=node dist/index.js",
-        "test": "npx jest --config=jest.config.json"
+        "test": "npx jest --config=jest.config.json",
+        "test:watch": "npx jest --config=jest.config.json --watch"
     },
     "keywords": [],
     "author": "Badata IT",
