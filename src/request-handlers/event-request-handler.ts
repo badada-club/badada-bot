@@ -1,3 +1,4 @@
+import { EVENTS_CHANNEL_ID } from '../config';
 import { Command, commands, sendMessage } from '../telegram-utils';
 import { Guard } from '../utils';
 import { Question } from './interview-request-handler';
@@ -46,7 +47,7 @@ export class EventRequestHandler extends RequestHandler {
         super(chatId);
     }
 
-    override async start(arg: string): Promise<boolean> {
+    override async start(arg?: string): Promise<boolean> {
         this._currentIndex = 0;
         this._ask(0);
         return this._currentIndex >= this._questions.length;
@@ -82,7 +83,7 @@ export class EventRequestHandler extends RequestHandler {
         await sendMessage(this._chatId, this._questions[questionId].question);
     }
     private async _apply() {
-        await sendMessage(this._chatId, JSON.stringify({
+        await sendMessage(EVENTS_CHANNEL_ID as number, JSON.stringify({
             date: this._date,
             cost: this._cost
         }));

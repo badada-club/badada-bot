@@ -1,5 +1,7 @@
 {
     "verbose": true,
-    "clearMocks": true,
-    "preset": "ts-jest"
+    "resetMocks": false,
+    "clearMocks": false,
+    "preset": "ts-jest",
+    "testMatch": ["<rootDir>/test/**/*.test.*"]
 }
