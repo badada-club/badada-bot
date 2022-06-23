@@ -3,6 +3,9 @@ import { TELEGRAM_API_URI, TELEGRAM_BOT_USERNAME } from './config';
 import { Message, Method as TelegramMethod } from './telegram-types';
 
 export async function sendMessage(chatId: number, message: string) {
+    console.log('Sending message...');
+    console.log('  chatId: ' + chatId);
+    console.log('  message: ' + message);
     if(message) // Telegram does no accept empty messages
         await sendRequest('sendMessage', {
             chat_id: chatId,
@@ -33,6 +36,9 @@ export async function sendInlineKeyboardMessage(chatId: number, message: string,
 }
 export async function sendRequest(method: TelegramMethod, params: any) {
     const url = `${TELEGRAM_API_URI}/${method}`;
+    console.log('Sending request...');
+    console.log('  method: ' + method);
+    console.log('  with params: ' + JSON.stringify(params));
     await axios.post(url, params);
 }
 

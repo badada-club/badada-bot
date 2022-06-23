@@ -83,6 +83,7 @@ export class EventRequestHandler extends RequestHandler {
         await sendMessage(this._chatId, this._questions[questionId].question);
     }
     private async _apply() {
+        console.log('Applying new event...');
         await sendMessage(EVENTS_CHANNEL_ID as number, JSON.stringify({
             date: this._date,
             cost: this._cost
