@@ -1,20 +1,33 @@
 import axios from 'axios';
-import { TELEGRAM_API_URI, TELEGRAM_BOT_USERNAME } from './config';
+import { TELEGRAM_BOT_USERNAME } from './config';
 import { Message, Method as TelegramMethod } from './telegram-types';
 
-export async function sendMessage(chatId: number, message: string) {
+export class Telegram {
+    private readonly _token: string;
+    private readonly _chatId: number;
+
+    constructor(token: string, chatId: number) {
+        this._token = token;
+        this._chatId = chatId;
+    }
+    async sendMessage(message: string): Promise<void> {
+        await sendMessage(this._token, this._chatId, message);
+    }
+}
+
+export async function sendMessage(token: string, chatId: number, message: string) {
     console.log('Sending message...');
     console.log('  chatId: ' + chatId);
     console.log('  message: ' + message);
     if(message) // Telegram does no accept empty messages
-        await sendRequest('sendMessage', {
+        await sendRequest(token, 'sendMessage', {
             chat_id: chatId,
             text: message
         });
 }
-export async function sendReplyKeyboardMessage(chatId: number, message: string, replyButtons: any[]) {
+async function sendReplyKeyboardMessage(token: string, chatId: number, message: string, replyButtons: any[]) {
     if(message) // Telegram does no accept empty messages
-        await sendRequest('sendMessage', {
+        await sendRequest(token, 'sendMessage', {
             chat_id: chatId,
             text: message,
             reply_markup: {
@@ -24,9 +37,9 @@ export async function sendReplyKeyboardMessage(chatId: number, message: string, 
             }
         });
 }
-export async function sendInlineKeyboardMessage(chatId: number, message: string, inlineButtons: any[]) {
+async function sendInlineKeyboardMessage(token: string, chatId: number, message: string, inlineButtons: any[]) {
     if(message) // Telegram does no accept empty messages
-        await sendRequest('sendMessage', {
+        await sendRequest(token, 'sendMessage', {
             chat_id: chatId,
             text: message,
             reply_markup: {
@@ -34,14 +47,13 @@ export async function sendInlineKeyboardMessage(chatId: number, message: string,
             }
         });
 }
-export async function sendRequest(method: TelegramMethod, params: any) {
-    const url = `${TELEGRAM_API_URI}/${method}`;
+async function sendRequest(token: string, method: TelegramMethod, params: any) {
+    const url = `${getTelegramApiUri(token)}/${method}`;
     console.log('Sending request...');
     console.log('  method: ' + method);
     console.log('  with params: ' + JSON.stringify(params));
     await axios.post(url, params);
 }
-
 export function getChatId(message: Message): number {
     return message?.chat?.id;
 }
@@ -65,4 +77,11 @@ export function getCommand(messageText: string): Command | undefined {
         return command as Command;
     else
         return undefined;
+}
+export const TELEGRAM_URI = 'https://api.telegram.org';
+export function getTelegramApiUri(token: string): string {
+    return `${TELEGRAM_URI}/bot${token}`;
+}
+export function getWebHookAction(token: string) {
+    return `telegram-webhook-message-${token}`;
 }
