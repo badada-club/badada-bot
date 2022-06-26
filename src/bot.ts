@@ -33,6 +33,7 @@ export class Bot {
                     throw e;
                 }
             }
+            res.sendStatus(200);
         });
     }
 
