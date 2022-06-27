@@ -2,7 +2,7 @@ import { Update } from './telegram-types';
 import { Command } from './telegram-utils';
 
 export class Pipeline implements UpdateHandler {
-    static create(...middlewares: Middleware[]) {
+    static create(...middlewares: Middleware[]): Pipeline {
         const pipeline = new Pipeline();
         for(const middleware of middlewares)
             pipeline.use(middleware);

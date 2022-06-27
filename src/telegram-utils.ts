@@ -61,7 +61,6 @@ export const commands = {
     start: 'start',
     echo: 'echo',
     new_event: 'new_event',
-    cancel: 'cancel'
 };
 export type Command = keyof typeof commands;
 export function getCommand(messageText: string): Command | undefined {

@@ -19,7 +19,7 @@ export class Bot {
         return setWebhookResponse.status == 200;
     }
 
-    setExpressWebHook(app: Express) {
+    setExpressWebHook(app: Express): void {
         app.post(`/${getWebHookAction(this._token)}`, async (req: Request, res: Response) => {
             const update: Update = req.body;
             try {
