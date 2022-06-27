@@ -6,9 +6,9 @@ import { EventMiddleware } from './middleware/event-middleware';
 import { commands, TELEGRAM_URI } from './telegram-utils';
 
 export const bot = new Bot(TELEGRAM_API_TOKEN);
+bot.pipeline.use(new EventMiddleware());
 bot.pipeline.on((upd, ctx) => ctx.command === commands.start, async (upd, ctx) => { await ctx.telegram.sendMessage('Привет!'); return true; });
 bot.pipeline.use(new EchoMiddleware());
-bot.pipeline.use(new EventMiddleware());
 
 export const app: Express = express();
 

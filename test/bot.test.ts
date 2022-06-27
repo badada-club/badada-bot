@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import request from 'supertest';
 import { Bot } from '../src/bot';
 import { Update } from '../src/telegram-types';
-import { getWebHookAction } from '../src/telegram-utils';
+import { commands, getWebHookAction } from '../src/telegram-utils';
 
 jest.mock('axios', () => {
     const actual = jest.requireActual('axios');
@@ -31,7 +31,7 @@ describe('Bot', () => {
                 message: {
                     message_id: 123,
                     chat: { id: 123 },
-                    text: '/start'
+                    text: `/${commands.start}`
                 }
             };
         });
