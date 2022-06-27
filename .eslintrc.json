@@ -55,6 +55,9 @@
         ],
         "no-extra-semi": [
             "error"
+        ],
+        "@typescript-eslint/explicit-function-return-type": [
+            "error"
         ]
     }
 }

@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { app } from '../src/app';
-import { WEBHOOK_ACTION } from '../src/config';
+import { TELEGRAM_API_TOKEN } from '../src/config';
+import { getWebHookAction } from '../src/telegram-utils';
 
 describe('app', () => {
     describe('On POST request to actions other then that of Telegram webhook', () => {
@@ -12,7 +13,7 @@ describe('app', () => {
     });
     describe('On GET requests to Telegram webhook action', () => {
         it('Should still return 200 for Telegram to stop resending the incorrect message', async () => {
-            const response = await request(app).get(`/${WEBHOOK_ACTION}`);
+            const response = await request(app).get(`/${getWebHookAction(TELEGRAM_API_TOKEN)}`);
             expect(response.statusCode).toStrictEqual(200);
             expect(response.text).toContain('404'); // The error code is sent in message body instead
         });    
