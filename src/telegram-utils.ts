@@ -15,7 +15,7 @@ export class Telegram {
     }
 }
 
-export async function sendMessage(token: string, chatId: number, message: string) {
+export async function sendMessage(token: string, chatId: number, message: string): Promise<void> {
     console.log('Sending message...');
     console.log('  chatId: ' + chatId);
     console.log('  message: ' + message);
@@ -25,7 +25,7 @@ export async function sendMessage(token: string, chatId: number, message: string
             text: message
         });
 }
-async function sendReplyKeyboardMessage(token: string, chatId: number, message: string, replyButtons: any[]) {
+async function sendReplyKeyboardMessage(token: string, chatId: number, message: string, replyButtons: any[]): Promise<void> {
     if(message) // Telegram does no accept empty messages
         await sendRequest(token, 'sendMessage', {
             chat_id: chatId,
@@ -37,7 +37,7 @@ async function sendReplyKeyboardMessage(token: string, chatId: number, message: 
             }
         });
 }
-async function sendInlineKeyboardMessage(token: string, chatId: number, message: string, inlineButtons: any[]) {
+async function sendInlineKeyboardMessage(token: string, chatId: number, message: string, inlineButtons: any[]): Promise<void> {
     if(message) // Telegram does no accept empty messages
         await sendRequest(token, 'sendMessage', {
             chat_id: chatId,
@@ -47,7 +47,7 @@ async function sendInlineKeyboardMessage(token: string, chatId: number, message:
             }
         });
 }
-async function sendRequest(token: string, method: TelegramMethod, params: any) {
+async function sendRequest(token: string, method: TelegramMethod, params: any): Promise<void> {
     const url = `${getTelegramApiUri(token)}/${method}`;
     console.log('Sending request...');
     console.log('  method: ' + method);
@@ -81,6 +81,6 @@ export const TELEGRAM_URI = 'https://api.telegram.org';
 export function getTelegramApiUri(token: string): string {
     return `${TELEGRAM_URI}/bot${token}`;
 }
-export function getWebHookAction(token: string) {
+export function getWebHookAction(token: string): string {
     return `telegram-webhook-message-${token}`;
 }

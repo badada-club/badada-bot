@@ -19,10 +19,10 @@ export class Pipeline implements UpdateHandler {
         return false;
     }
 
-    on(filter: FilterUpdate, handle: HandleUpdate) {
+    on(filter: FilterUpdate, handle: HandleUpdate): void {
         this.use({ filter, handle });
     }
-    use(middleware: Middleware) {
+    use(middleware: Middleware): void {
         this._items.push(middleware);
     }
 }

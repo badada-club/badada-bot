@@ -3,7 +3,7 @@ import { Update } from '../telegram-types';
 import { commands } from '../telegram-utils';
 
 export class EchoMiddleware implements Middleware {
-    filter(update: Update, ctx: Context) {
+    filter(update: Update, ctx: Context): boolean {
         return !!update.message && ctx.command === commands.echo;
     }
     async handle(update: Update, ctx: Context): Promise<boolean> {
