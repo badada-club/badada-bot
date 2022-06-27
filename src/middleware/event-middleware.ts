@@ -11,11 +11,20 @@ export class EventMiddleware implements Middleware {
         return ctx.command === commands.new_event || this._indicies.has(ctx.chatId);
     }
     async handle(update: Update, ctx: Context): Promise<boolean> {
+        console.log(
+            `Event middleware handle
+                update: ${JSON.stringify(update)}`
+        );
         if(ctx.command === commands.new_event) {
+            console.log('Event middleware handle new command');
             await ctx.telegram.sendMessage(questions[0].question);            
             this._indicies.set(ctx.chatId, 0);
         } else {
             const questionId: number = this._indicies.get(ctx.chatId) as number;
+            console.log(`
+                Event middleware handle
+                    questionId: ${questionId}
+                `);
             if(!await questions[questionId].checks.handle(update, ctx)) {
                 await questions[questionId].apply(update, ctx, this._event);
                 this._indicies.delete(ctx.chatId);

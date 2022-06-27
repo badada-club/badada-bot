@@ -22,6 +22,7 @@ export class Bot {
     setExpressWebHook(app: Express): void {
         app.post(`/${getWebHookAction(this._token)}`, async (req: Request, res: Response) => {
             const update: Update = req.body;
+            console.log('Update received: ' + JSON.stringify(update));
             try {
                 await this._handle(update);
             } catch(e) {
