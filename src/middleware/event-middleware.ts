@@ -30,8 +30,10 @@ export class EventMiddleware implements Middleware {
                 this._indicies.delete(ctx.chatId);
                 if(questionId + 1 >= questions.length)
                     await this._commit();
-                else
+                else {
+                    await ctx.telegram.sendMessage(questions[questionId + 1].question);            
                     this._indicies.set(ctx.chatId, questionId + 1);
+                }
             } else {
                 await ctx.telegram.sendMessage(questions[questionId].question);                
             }
