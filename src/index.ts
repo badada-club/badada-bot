@@ -12,7 +12,7 @@ const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}.`);
 });
 
-async function cleanup() {
+async function cleanup(): Promise<void> {
     console.log('Cleaning up...');
     await bot.terminate();
     await new Promise<void>((resolve, reject) => {
