@@ -42,5 +42,35 @@ describe('Bot', () => {
             expect(response.statusCode).toStrictEqual(200);
         });    
     });
-
+    describe('On unknown request', () => {
+        let update: Update;
+        beforeAll(() => {
+            update = {
+                message: {
+                    message_id: 123,
+                    chat: { id: 123 },
+                    text: 'some strange request'
+                }
+            };
+        });
+        it('Should return 200', async () => {
+            const response = await request(app)
+                .post(`/${getWebHookAction(token)}`)
+                .send(update);
+            expect(response.statusCode).toStrictEqual(200);
+        });    
+    });
+    describe('On incorrect Update', () => {
+        let update: Update;
+        beforeAll(() => {
+            update = {
+            };
+        });
+        it('Should return 200', async () => {
+            const response = await request(app)
+                .post(`/${getWebHookAction(token)}`)
+                .send(update);
+            expect(response.statusCode).toStrictEqual(200);
+        });    
+    });
 });

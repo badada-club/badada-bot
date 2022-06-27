@@ -27,9 +27,9 @@ export class Bot {
                 await this._handle(update);
             } catch(e) {
                 if(e instanceof CreateContextError) {
-                    res.status(200 /*400*/).send(e.message);
+                    return res.status(200 /*400*/).send(e.message);
                 } else if(e instanceof HandleUpdateError) {
-                    res.status(200 /*400*/).send(e.message);
+                    return res.status(200 /*400*/).send(e.message);
                 } else {
                     throw e;
                 }
