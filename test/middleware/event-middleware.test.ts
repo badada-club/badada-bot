@@ -1,23 +1,16 @@
-import { EVENTS_CHANNEL_ID, TELEGRAM_API_TOKEN } from '../../src/config';
-import { EventMiddleware } from '../../src/middleware/event-middleware';
-import { sendMessage } from '../../src/telegram-utils';
-import { toMocked } from '../test-utils';
-
-jest.mock('../../src/telegram-utils', () => {
-    const actual = jest.requireActual('../../src/telegram-utils');
-    return {
-        ...actual,
-        sendMessage: jest.fn()
-    };        
-});
-const mockedSendMessage = toMocked(sendMessage);
+import { EventMiddleware } from '../../src/bot/middleware/event-middleware';
+import { EventCommitter } from '../../src/event-committer';
 
 describe('EventMiddleware', () => {
     let middleware: EventMiddleware;
+    let commitSpy: jest.Mock;
 
     beforeEach(() => {
-        mockedSendMessage.mockClear();
-        middleware = new EventMiddleware();
+        commitSpy = jest.fn();
+        const committerStub: EventCommitter = {
+            commit: commitSpy
+        };
+        middleware = new EventMiddleware(committerStub);
     });
 
     describe('On correct creation of a new event', () => {
@@ -49,13 +42,13 @@ describe('EventMiddleware', () => {
                 { chatId: 123, telegram: { sendMessage: jest.fn().mockReturnValue(Promise<void>.resolve()) } }
             );
     
-            expect(mockedSendMessage).toHaveBeenCalledTimes(1);
-            expect(mockedSendMessage).toHaveBeenCalledWith(
-                TELEGRAM_API_TOKEN, EVENTS_CHANNEL_ID,
-                JSON.stringify({
+            expect(commitSpy).toHaveBeenCalledTimes(1);
+            expect(commitSpy).toHaveBeenCalledWith(
+                {
+                    creator_chat_id: 123,
                     date: new Date('2030-01-01'),
                     cost: 123
-                })
+                }
             );
         });
         it('Should ask questions', async () => {
@@ -148,13 +141,13 @@ describe('EventMiddleware', () => {
                 { chatId: 123, telegram: { sendMessage: jest.fn().mockReturnValue(Promise<void>.resolve()) } }
             );
     
-            expect(mockedSendMessage).toHaveBeenCalledTimes(1);
-            expect(mockedSendMessage).toHaveBeenCalledWith(
-                TELEGRAM_API_TOKEN, EVENTS_CHANNEL_ID,
-                JSON.stringify({
+            expect(commitSpy).toHaveBeenCalledTimes(1);
+            expect(commitSpy).toHaveBeenCalledWith(
+                {
+                    creator_chat_id: 123,
                     date: new Date('2030-01-01'),
                     cost: 123
-                })
+                }
             );
         });
 

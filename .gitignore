@@ -1,3 +1,4 @@
 node_modules
-*.env
 dist
+src/db/prisma/badada/generated
+*.env

@@ -1,12 +1,14 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
-import { Bot } from './bot';
+import { Bot } from './bot/bot';
+import { EchoMiddleware } from './bot/middleware/echo-middleware';
+import { EventMiddleware } from './bot/middleware/event-middleware';
+import { commands, MessageToChannelEventCommitter, TELEGRAM_URI } from './bot/telegram-utils';
 import { TELEGRAM_API_TOKEN } from './config';
-import { EchoMiddleware } from './middleware/echo-middleware';
-import { EventMiddleware } from './middleware/event-middleware';
-import { commands, TELEGRAM_URI } from './telegram-utils';
+import { DataBaseEventCommitter } from './db/db-event-committer';
+import { EventCommitterChain } from './event-committer';
 
 export const bot = new Bot(TELEGRAM_API_TOKEN);
-bot.pipeline.use(new EventMiddleware());
+bot.pipeline.use(new EventMiddleware(new EventCommitterChain(new MessageToChannelEventCommitter(), new DataBaseEventCommitter())));
 bot.pipeline.on((upd, ctx) => ctx.command === commands.start, async (upd, ctx) => { await ctx.telegram.sendMessage('Привет!'); return true; });
 bot.pipeline.use(new EchoMiddleware());
 

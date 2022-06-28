@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { TELEGRAM_BOT_USERNAME } from './config';
+import { EVENTS_CHANNEL_ID, TELEGRAM_API_TOKEN, TELEGRAM_BOT_USERNAME } from '../config';
+import { BadadaEvent } from '../event';
+import { EventCommitter } from '../event-committer';
 import { Message, Method as TelegramMethod } from './telegram-types';
 
 export class Telegram {
@@ -77,10 +79,17 @@ export function getCommand(messageText: string): Command | undefined {
     else
         return undefined;
 }
+
 export const TELEGRAM_URI = 'https://api.telegram.org';
 export function getTelegramApiUri(token: string): string {
     return `${TELEGRAM_URI}/bot${token}`;
 }
 export function getWebHookAction(token: string): string {
     return `telegram-webhook-message-${token}`;
+}
+
+export class MessageToChannelEventCommitter implements EventCommitter {
+    async commit(event: BadadaEvent): Promise<void> {
+        await sendMessage(TELEGRAM_API_TOKEN, EVENTS_CHANNEL_ID, JSON.stringify(event));
+    }
 }

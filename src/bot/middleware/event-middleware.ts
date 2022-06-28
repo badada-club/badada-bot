@@ -1,14 +1,19 @@
-import { EVENTS_CHANNEL_ID, TELEGRAM_API_TOKEN } from '../config';
+import { BadadaEvent, BadadaEventSeed } from '../../event';
+import { EventCommitter } from '../../event-committer';
 import { Context, Middleware, Pipeline } from '../pipeline';
 import { Update } from '../telegram-types';
-import { commands, sendMessage } from '../telegram-utils';
+import { commands } from '../telegram-utils';
 
 export class EventMiddleware implements Middleware {
-    private readonly _indicies = new Map<number, number>();
-    private readonly _event: EventSeed = {};
+    private readonly _sessions = new Map<number, EventMiddlewareSession>();
+    private _committer: EventCommitter;
+
+    constructor(committer: EventCommitter) {
+        this._committer = committer;
+    }
 
     filter(update: Update, ctx: Context): boolean {
-        return ctx.command === commands.new_event || this._indicies.has(ctx.chatId);
+        return ctx.command === commands.new_event || this._sessions.has(ctx.chatId);
     }
     async handle(update: Update, ctx: Context): Promise<boolean> {
         console.log(
@@ -18,38 +23,41 @@ export class EventMiddleware implements Middleware {
         if(ctx.command === commands.new_event) {
             console.log('Event middleware handle new command');
             await ctx.telegram.sendMessage(questions[0].question);            
-            this._indicies.set(ctx.chatId, 0);
+            this._sessions.set(ctx.chatId, {
+                seed: { creator_chat_id: ctx.chatId },
+                questionId: 0
+            });
         } else {
-            const questionId: number = this._indicies.get(ctx.chatId) as number;
+            const session: EventMiddlewareSession = this._sessions.get(ctx.chatId) as EventMiddlewareSession;
             console.log(`
                 Event middleware handle
-                    questionId: ${questionId}
+                    session: ${JSON.stringify(session)}
                 `);
-            if(!await questions[questionId].checks.handle(update, ctx)) {
-                await questions[questionId].apply(update, ctx, this._event);
-                this._indicies.delete(ctx.chatId);
-                if(questionId + 1 >= questions.length)
-                    await this._commit();
-                else {
-                    await ctx.telegram.sendMessage(questions[questionId + 1].question);            
-                    this._indicies.set(ctx.chatId, questionId + 1);
+            if(!await questions[session.questionId].checks.handle(update, ctx)) {
+                await questions[session.questionId].apply(update, ctx, session.seed);
+                this._sessions.delete(ctx.chatId);
+                if(session.questionId + 1 >= questions.length) {
+                    console.log('Applying new event...');
+                    await this._committer.commit(session.seed as BadadaEvent);
+                } else {
+                    await ctx.telegram.sendMessage(questions[session.questionId + 1].question);
+                    this._sessions.set(ctx.chatId, {
+                        seed: session.seed,
+                        questionId: session.questionId + 1
+                    });
                 }
             } else {
-                await ctx.telegram.sendMessage(questions[questionId].question);                
+                await ctx.telegram.sendMessage(questions[session.questionId].question);                
             }
         }
         return true;
-    }
-    private async _commit(): Promise<void> {
-        console.log('Applying new event...');
-        await sendMessage(TELEGRAM_API_TOKEN, EVENTS_CHANNEL_ID, JSON.stringify(this._event));
     }
 }
 
 interface Question {
     question: string;
     checks: Pipeline,
-    apply: (update: Update, ctx: Context, event: EventSeed) => void,
+    apply: (update: Update, ctx: Context, event: BadadaEventSeed) => void,
 }
 
 const questions: Question[] = [
@@ -66,7 +74,7 @@ const questions: Question[] = [
             },
 
         ),
-        apply: (update: Update, ctx: Context, event: EventSeed): void => {
+        apply: (update: Update, ctx: Context, event: BadadaEventSeed): void => {
             event.date = new Date(update.message?.text as string);
         }
     },
@@ -78,13 +86,13 @@ const questions: Question[] = [
                 handle: async (update: Update, ctx: Context) => { await ctx.telegram.sendMessage('Это не похоже на число.'); return true; }
             },
         ),
-        apply: (update: Update, ctx: Context, event: EventSeed): void => {
+        apply: (update: Update, ctx: Context, event: BadadaEventSeed): void => {
             event.cost = parseInt(update.message?.text as string);
         }
     }
 ];
 
-interface EventSeed {
-    date?: Date;
-    cost?: number;
-}
+type EventMiddlewareSession = {
+    seed: BadadaEventSeed
+    questionId: number
+};
