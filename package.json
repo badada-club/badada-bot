@@ -6,6 +6,7 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "npm run prisma:migrate:prod && npm run copy-prisma && npm run prisma:generate:prod && npm run prisma:generate:dev && npx tsc",
+        "build:github": "npm run copy-prisma && npm run prisma:generate:prod && npm run prisma:generate:dev && npx tsc",
         "build:dev": "npm run prisma:migrate:dev && npx tsc",
         "build:dev:watch": "npx tsc --watch",
         "start": "node --experimental-specifier-resolution=node dist/index.js",
