@@ -5,7 +5,7 @@
     "description": "An app responsible for communitating with the 'Badada' Telegram bot.",
     "main": "dist/index.js",
     "scripts": {
-        "build": "npm run prisma:migrate:prod && npx tsc && npm run copy-prisma && npm run prisma:generate:prod",
+        "build": "npm run prisma:migrate:prod && npm run copy-prisma && npm run prisma:generate:prod && npx tsc",
         "build:dev": "npm run prisma:migrate:dev && npx tsc",
         "build:dev:watch": "npx tsc --watch",
         "start": "node --experimental-specifier-resolution=node dist/index.js",

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { BadadaEvent } from '../event';
 import { EventCommitter } from '../event-committer';
 import { PrismaClient as BadadaDB } from './prisma/badada/generated';
@@ -11,7 +12,7 @@ const badadaDB = new BadadaDB({
     ],
 });
   
-badadaDB.$on('query', (e) => {
+badadaDB.$on('query', (e: Prisma.QueryEvent) => {
     console.log('Query: ' + e.query);
     console.log('Params: ' + e.params);
     console.log('Duration: ' + e.duration + 'ms');
