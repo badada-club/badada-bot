@@ -1,8 +1,8 @@
 import express, { Express } from 'express';
 import request from 'supertest';
-import { Bot } from '../src/bot';
-import { Update } from '../src/telegram-types';
-import { commands, getWebHookAction } from '../src/telegram-utils';
+import { Bot } from '../src/bot/bot';
+import { Update } from '../src/bot/telegram-types';
+import { commands, getWebHookAction } from '../src/bot/telegram-utils';
 
 jest.mock('axios', () => {
     const actual = jest.requireActual('axios');
