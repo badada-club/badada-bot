@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { EVENTS_CHANNEL_ID, TELEGRAM_API_TOKEN, TELEGRAM_BOT_USERNAME } from '../config';
+import { BADADA_EVENTS_CHANNEL_ID, TELEGRAM_API_TOKEN, TELEGRAM_BOT_USERNAME } from '../config';
 import { BadadaEvent } from '../event';
 import { EventCommitter } from '../event-committer';
 import { Message, Method as TelegramMethod } from './telegram-types';
@@ -90,6 +90,6 @@ export function getWebHookAction(token: string): string {
 
 export class MessageToChannelEventCommitter implements EventCommitter {
     async commit(event: BadadaEvent): Promise<void> {
-        await sendMessage(TELEGRAM_API_TOKEN, EVENTS_CHANNEL_ID, JSON.stringify(event));
+        await sendMessage(TELEGRAM_API_TOKEN, BADADA_EVENTS_CHANNEL_ID, JSON.stringify(event));
     }
 }

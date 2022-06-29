@@ -1,4 +1,4 @@
-import { app, bot } from './app';
+import { app, bot, cron } from './app';
 import { HEROKU_APP_NAME } from './config';
 import { getAppUri } from './heroku-utils';
 
@@ -15,6 +15,7 @@ const server = app.listen(PORT, () => {
 async function cleanup(): Promise<void> {
     console.log('Cleaning up...');
     await bot.terminate();
+    cron.stop();
     await new Promise<void>((resolve, reject) => {
         if(server.listening)
             server.close((err) => err ? reject() : resolve());
