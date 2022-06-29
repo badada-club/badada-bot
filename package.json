@@ -13,7 +13,7 @@
         "test": "npx jest --config=jest.config.json",
         "test:watch": "npx jest --config=jest.config.json --watch",
         "lint": "npx eslint . --ext .ts",
-        "copy-prisma": "copyfiles -u 1 src/**/prisma/**/generated/**/*.* dist/",
+        "copy-prisma": "copyfiles -u 1 src/**/prisma/**/generated/*.* src/**/prisma/**/generated/**/*.* dist/",
         "prisma:generate:dev": "npx prisma generate --schema ./src/db/prisma/badada/badada.prisma",
         "prisma:migrate:dev": "npx prisma migrate dev --schema ./src/db/prisma/badada/badada.prisma",
         "prisma:migrate:prod": "npx prisma migrate deploy --schema ./src/db/prisma/badada/badada.prisma"
