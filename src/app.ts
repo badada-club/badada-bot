@@ -2,7 +2,7 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import { Bot } from './bot/bot';
 import { EchoMiddleware } from './bot/middleware/echo-middleware';
 import { EventMiddleware } from './bot/middleware/event-middleware';
-import { commands, MessageToChannelEventCommitter, sendMessage, TELEGRAM_URI } from './bot/telegram-utils';
+import { commands, MessageToChannelEventCommitter, sendMessage } from './bot/telegram-utils';
 import { BADADA_CLUB_CHAT_ID, TELEGRAM_API_TOKEN } from './config';
 import { CronJobCron } from './cron/cron-job-cron';
 import { DataBaseEventCommitter } from './db/db-event-committer';
@@ -19,11 +19,6 @@ cron.start();
 
 export const app: Express = express();
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.header('Access-Control-Allow-Origin', TELEGRAM_URI);
-    res.header('Access-Control-Allow-Methods', 'POST');
-    next();
-});
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
