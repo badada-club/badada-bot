@@ -1,6 +1,4 @@
 import { Express, Request, Response } from 'express';
-import { HEROKU_APP_NAME } from '../config';
-import { getAppUri } from '../heroku-utils';
 import { Cron } from './cron';
 
 export class CronJobCron extends Cron {
@@ -14,7 +12,7 @@ export class CronJobCron extends Cron {
     }
 
     setupExpress(app: Express): void {
-        app.put(`${getAppUri(HEROKU_APP_NAME)}/cron`, async (req: Request, res: Response) => {
+        app.put('/cron', async (req: Request, res: Response) => {
             this._active && this._action && await this._action();
         });
     }
