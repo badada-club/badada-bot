@@ -1,0 +1,63 @@
+import express, { Express, NextFunction, Request, Response } from 'express';
+import { Bot } from '../bot/bot';
+import { commands } from '../bot/commands';
+import { EventCommitterChain } from '../bot/event-committer/event-committer';
+import { MessageToChannelEventCommitter } from '../bot/event-committer/message-to-channel-event-committer';
+import { EventMiddleware } from '../bot/middleware/event-middleware';
+import { Context } from '../bot/pipeline';
+import { BADADA_CLUB_CHAT_ID, TELEGRAM_API_TOKEN } from '../config';
+import { CronJobCron } from '../cron/cron-job-cron';
+import { Update } from '../telegram/telegram-types';
+import { sendMessage } from '../telegram/telegram-utils';
+import { DataBaseEventCommitter } from './db-event-committer';
+import { get as eventProvider } from './db-event-provider';
+
+export const bot = new Bot(TELEGRAM_API_TOKEN);
+bot.pipeline.use(new EventMiddleware(new EventCommitterChain(new MessageToChannelEventCommitter(), new DataBaseEventCommitter())));
+bot.pipeline.on(
+    (upd: Update, ctx: Context) => ctx.command === commands.start,
+    async (upd: Update, ctx: Context) => { await ctx.telegram.sendMessage('Привет!'); return true; }
+);
+bot.pipeline.on(
+    (upd: Update, ctx: Context) => !!upd.message && ctx.command === commands.echo,
+    async (upd: Update, ctx: Context) => { if(ctx.commandArg) await ctx.telegram.sendMessage(ctx.commandArg); return true; }
+);
+bot.pipeline.on(
+    (upd: Update, ctx: Context) => ctx.command === commands.events_today,
+    async (upd: Update, ctx: Context) => {
+        const now = new Date();
+        const from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const events = await eventProvider(from, to);
+        for(const event of events)
+            await ctx.telegram.sendMessage(JSON.stringify(event));
+        return true;
+    }
+);
+
+export const cron = new CronJobCron();
+cron.on('tick', async () => await sendMessage(TELEGRAM_API_TOKEN, BADADA_CLUB_CHAT_ID, 'tick'));
+cron.start();
+
+export const app: Express = express();
+
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: true
+}));
+
+cron.setupExpress(app);
+
+bot.setExpressWebHook(app);
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error('Exception thrown while handling the request...');
+    if(err) {
+        console.error(err.toString());
+        console.error(err.stack);    
+    }
+    res.status(200 /*500*/).send('500: Exception thrown while handling the request.');
+});
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.status(200 /*404*/).send('404: Unknown route.');
+});

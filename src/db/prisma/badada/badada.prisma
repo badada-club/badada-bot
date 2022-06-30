@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
     provider = "prisma-client-js"
     output   = "./generated"
@@ -11,12 +8,27 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+// Common
 model Event {
-    id              Int      @default(autoincrement())
-    creator_chat_id Int
-    date            DateTime
-    cost            Int?
+    id   Int      @default(autoincrement())
+    date DateTime
+    cost Int?
+
+    telegramEvent TelegramEvent?
 
     @@id([id])
     @@map("events")
+}
+
+// Telegram bot
+model TelegramEvent {
+    id            Int @default(autoincrement())
+    eventId       Int @unique @map("event_id")
+    creatorChatId Int @map("creator_chat_id")
+
+    event Event @relation(fields: [eventId], references: [id])
+
+    @@id([id])
+    @@index([creatorChatId])
+    @@map("telegram_event")
 }

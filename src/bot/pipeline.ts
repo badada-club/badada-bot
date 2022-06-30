@@ -1,5 +1,5 @@
-import { Update } from './telegram-types';
-import { Command } from './telegram-utils';
+import { Update } from '../telegram/telegram-types';
+import { Command } from './commands';
 
 export class Pipeline implements UpdateHandler {
     static create(...middlewares: Middleware[]): Pipeline {

@@ -1,8 +1,9 @@
 import axios from 'axios';
 import request from 'supertest';
-import { app } from '../src/app';
-import { commands, getWebHookAction } from '../src/bot/telegram-utils';
+import { app } from '../src/app/app';
+import { commands } from '../src/bot/commands';
 import { TELEGRAM_API_TOKEN } from '../src/config';
+import { getWebHookAction } from '../src/telegram/telegram-utils';
 import { toMocked } from './test-utils';
 
 describe('express setup', () => {
