@@ -3,10 +3,16 @@ export interface Message {
     message_id: number,
     chat: Chat,
     via_bot?: any,
-    text?: string
+    text?: string,
+    from?: User
+}
+export interface User {
+    id: number,
+    username?: string
 }
 export interface Chat {
-    id: number
+    id: number,
+    username?: string
 }
 export interface CallbackQuery {
     message: Message

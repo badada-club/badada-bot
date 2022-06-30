@@ -1,8 +1,8 @@
-import { BadadaEvent, BadadaEventSeed } from '../../event';
-import { EventCommitter } from '../../event-committer';
+import { BadadaEvent, BadadaEventSeed } from '../../common/event';
+import { Update } from '../../telegram/telegram-types';
+import { commands } from '../commands';
+import { EventCommitter } from '../event-committer/event-committer';
 import { Context, Middleware, Pipeline } from '../pipeline';
-import { Update } from '../telegram-types';
-import { commands } from '../telegram-utils';
 
 export class EventMiddleware implements Middleware {
     private readonly _sessions = new Map<number, EventMiddlewareSession>();
@@ -24,7 +24,7 @@ export class EventMiddleware implements Middleware {
             console.log('Event middleware handle new command');
             await ctx.telegram.sendMessage(questions[0].question);            
             this._sessions.set(ctx.chatId, {
-                seed: { creator_chat_id: ctx.chatId },
+                seed: { },
                 questionId: 0
             });
         } else {
@@ -38,7 +38,10 @@ export class EventMiddleware implements Middleware {
                 this._sessions.delete(ctx.chatId);
                 if(session.questionId + 1 >= questions.length) {
                     console.log('Applying new event...');
-                    await this._committer.commit(session.seed as BadadaEvent);
+                    await this._committer.commit({
+                        event: session.seed as BadadaEvent,
+                        creatorChatId: ctx.chatId,
+                    });
                 } else {
                     await ctx.telegram.sendMessage(questions[session.questionId + 1].question);
                     this._sessions.set(ctx.chatId, {

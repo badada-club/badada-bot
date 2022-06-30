@@ -1,5 +1,5 @@
+import { EventCommitter } from '../../src/bot/event-committer/event-committer';
 import { EventMiddleware } from '../../src/bot/middleware/event-middleware';
-import { EventCommitter } from '../../src/event-committer';
 
 describe('EventMiddleware', () => {
     let middleware: EventMiddleware;
@@ -45,9 +45,11 @@ describe('EventMiddleware', () => {
             expect(commitSpy).toHaveBeenCalledTimes(1);
             expect(commitSpy).toHaveBeenCalledWith(
                 {
-                    creator_chat_id: 123,
-                    date: new Date('2030-01-01'),
-                    cost: 123
+                    creatorChatId: 123,
+                    event: {
+                        date: new Date('2030-01-01'),
+                        cost: 123
+                    }
                 }
             );
         });
@@ -144,9 +146,11 @@ describe('EventMiddleware', () => {
             expect(commitSpy).toHaveBeenCalledTimes(1);
             expect(commitSpy).toHaveBeenCalledWith(
                 {
-                    creator_chat_id: 123,
-                    date: new Date('2030-01-01'),
-                    cost: 123
+                    creatorChatId: 123,
+                    event: {
+                        date: new Date('2030-01-01'),
+                        cost: 123
+                    }
                 }
             );
         });

@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { Express, Request, Response } from 'express';
+import { Update } from '../telegram/telegram-types';
+import { getChatId, getCommand, getTelegramApiUri, getWebHookAction } from '../telegram/telegram-utils';
+import { Command } from './commands';
 import { Context, Pipeline } from './pipeline';
-import { Update } from './telegram-types';
-import { Command, getChatId, getCommand, getTelegramApiUri, getWebHookAction, Telegram } from './telegram-utils';
+import { Telegram } from './telegram';
 
 export class Bot {
     private readonly _token: string;
@@ -52,7 +54,7 @@ export class Bot {
             if(!text)
                 throw new CreateContextError('400: The text of the received message is empty.');
             const trimmedText = text.trimStart();
-            let command: Command | undefined = undefined;
+            let command: string | undefined = undefined;
             let commandArg: string | undefined = undefined;
             if(trimmedText.startsWith('/')) {
                 command = getCommand(trimmedText);
@@ -61,7 +63,7 @@ export class Bot {
             }
             return {
                 chatId: chatId,
-                command: command,
+                command: command as Command,
                 commandArg: commandArg,
                 telegram: new Telegram(this._token, chatId)
             };

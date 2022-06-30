@@ -1,8 +1,8 @@
-import { app, bot, cron } from './app';
+import { app, bot, cron } from './app/app';
 import { HEROKU_APP_NAME } from './config';
 import { getAppUri } from './heroku-utils';
 
-bot.setWebHook(getAppUri(HEROKU_APP_NAME)).then(ok => {
+bot.setWebHook(getAppUri(HEROKU_APP_NAME)).then((ok: boolean) => {
     if(!ok)
         process.kill(process.pid, 'SIGTERM');
 });
@@ -18,7 +18,7 @@ async function cleanup(): Promise<void> {
     cron.stop();
     await new Promise<void>((resolve, reject) => {
         if(server.listening)
-            server.close((err) => err ? reject() : resolve());
+            server.close((err: Error | undefined) => err ? reject() : resolve());
     });
     console.log('Done.');
 }
