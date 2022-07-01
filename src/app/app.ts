@@ -43,9 +43,9 @@ async function showTodayEvents(sendMessage: (message: string) => Promise<void>):
 }
 
 export const cron = new CronJobCron();
-cron.on('tick', async () => 
+cron.on('tick', async () => {
     await showTodayEvents(async (message:string) => await sendMessage(TELEGRAM_API_TOKEN, BADADA_CLUB_CHAT_ID, message));
-);
+});
 
 cron.start();
 
