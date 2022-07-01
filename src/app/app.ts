@@ -5,6 +5,7 @@ import { EventCommitterChain } from '../bot/event-committer/event-committer';
 import { MessageToChannelEventCommitter } from '../bot/event-committer/message-to-channel-event-committer';
 import { EventMiddleware } from '../bot/middleware/event-middleware';
 import { Context } from '../bot/pipeline';
+import { BadadaEvent } from '../common/event';
 import { BADADA_CLUB_CHAT_ID, TELEGRAM_API_TOKEN } from '../config';
 import { CronJobCron } from '../cron/cron-job-cron';
 import { Update } from '../telegram/telegram-types';
@@ -25,18 +26,23 @@ bot.pipeline.on(
 bot.pipeline.on(
     (upd: Update, ctx: Context) => ctx.command === commands.events_today,
     async (upd: Update, ctx: Context) => {
-        const now = new Date();
-        const from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-        const events = await eventProvider(from, to);
-        for(const event of events)
-            await ctx.telegram.sendMessage(JSON.stringify(event));
+        (await getTodayEvents()).forEach(async event => await ctx.telegram.sendMessage(JSON.stringify(event)));
         return true;
     }
 );
 
+async function getTodayEvents(): Promise<BadadaEvent[]> {
+    const now = new Date();
+    const from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    return await eventProvider(from, to);
+}
+
 export const cron = new CronJobCron();
-cron.on('tick', async () => await sendMessage(TELEGRAM_API_TOKEN, BADADA_CLUB_CHAT_ID, 'tick'));
+cron.on('tick', async () => (await getTodayEvents())
+    .forEach(async event => await sendMessage(TELEGRAM_API_TOKEN, BADADA_CLUB_CHAT_ID, JSON.stringify(event)))
+);
+
 cron.start();
 
 export const app: Express = express();
