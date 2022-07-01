@@ -22,7 +22,7 @@ export async function get(from: Date, to?: Date): Promise<BadadaEvent[]> {
             where: {
                 AND: [
                     { date: { gte: from } },
-                    { date: { lte: to } },
+                    { date: { lt: to } },
                 ]
             }
         });

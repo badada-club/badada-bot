@@ -26,7 +26,7 @@ bot.pipeline.on(
 bot.pipeline.on(
     (upd: Update, ctx: Context) => ctx.command === commands.events_today,
     async (upd: Update, ctx: Context) => {
-        (await getTodayEvents()).forEach(async event => await ctx.telegram.sendMessage(JSON.stringify(event)));
+        await showTodayEvents(async (message: string) => await ctx.telegram.sendMessage(message));
         return true;
     }
 );
@@ -37,10 +37,14 @@ async function getTodayEvents(): Promise<BadadaEvent[]> {
     const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     return await eventProvider(from, to);
 }
+async function showTodayEvents(sendMessage: (message: string) => Promise<void>): Promise<void> {
+    await sendMessage('Сегодня планируются такие мероприятия:');
+    (await getTodayEvents()).forEach(async event => await sendMessage(JSON.stringify(event)));
+}
 
 export const cron = new CronJobCron();
-cron.on('tick', async () => (await getTodayEvents())
-    .forEach(async event => await sendMessage(TELEGRAM_API_TOKEN, BADADA_CLUB_CHAT_ID, JSON.stringify(event)))
+cron.on('tick', async () => 
+    await showTodayEvents(async (message:string) => await sendMessage(TELEGRAM_API_TOKEN, BADADA_CLUB_CHAT_ID, message));
 );
 
 cron.start();
