@@ -10,6 +10,7 @@ import { BADADA_CLUB_CHAT_ID, TELEGRAM_API_TOKEN } from '../config';
 import { CronJobCron } from '../cron/cron-job-cron';
 import { Update } from '../telegram/telegram-types';
 import { sendMessage } from '../telegram/telegram-utils';
+import { addDays, getUtcToday } from '../utils';
 import { DataBaseEventCommitter } from './db-event-committer';
 import { get as eventProvider } from './db-event-provider';
 
@@ -32,10 +33,7 @@ bot.pipeline.on(
 );
 
 async function getTodayEvents(): Promise<BadadaEvent[]> {
-    const now = new Date();
-    const from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    return await eventProvider(from, to);
+    return await eventProvider(getUtcToday(), addDays(getUtcToday(), 1));
 }
 async function showTodayEvents(sendMessage: (message: string) => Promise<void>): Promise<void> {
     await sendMessage('Сегодня планируются такие мероприятия:');

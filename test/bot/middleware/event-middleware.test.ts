@@ -1,5 +1,7 @@
-import { EventCommitter } from '../../src/bot/event-committer/event-committer';
-import { EventMiddleware } from '../../src/bot/middleware/event-middleware';
+import { EventCommitter } from '../../../src/bot/event-committer/event-committer';
+import { EventMiddleware } from '../../../src/bot/middleware/event-middleware';
+import { EVENTS_INPUT_TIMEZONE } from '../../../src/config';
+import { addHours } from '../../../src/utils';
 
 describe('EventMiddleware', () => {
     let middleware: EventMiddleware;
@@ -47,7 +49,7 @@ describe('EventMiddleware', () => {
                 {
                     creatorChatId: 123,
                     event: {
-                        date: new Date('2030-01-01'),
+                        date: addHours(new Date('2030-01-01'), -EVENTS_INPUT_TIMEZONE),
                         cost: 123
                     }
                 }
@@ -148,7 +150,7 @@ describe('EventMiddleware', () => {
                 {
                     creatorChatId: 123,
                     event: {
-                        date: new Date('2030-01-01'),
+                        date: addHours(new Date('2030-01-01'), -EVENTS_INPUT_TIMEZONE),
                         cost: 123
                     }
                 }

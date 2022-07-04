@@ -1,5 +1,7 @@
 import { BadadaEvent, BadadaEventSeed } from '../../common/event';
+import { EVENTS_INPUT_TIMEZONE } from '../../config';
 import { Update } from '../../telegram/telegram-types';
+import { addHours, getUtcToday, tryParseUtcIsoDate, tryParseUtcIsoDateValue } from '../../utils';
 import { commands } from '../commands';
 import { EventCommitter } from '../event-committer/event-committer';
 import { Context, Middleware, Pipeline } from '../pipeline';
@@ -68,17 +70,18 @@ const questions: Question[] = [
         question: 'Укажи дату в формате YYYY-MM-DD (по московскому времени).',
         checks: Pipeline.create(
             {
-                filter: (update: Update, ctx: Context) => Number.isNaN(Date.parse(update.message?.text as string)),
+                filter: (update: Update, ctx: Context) => !tryParseUtcIsoDateValue(update.message?.text as string),
                 handle: async (update: Update, ctx: Context) => { await ctx.telegram.sendMessage('Это не похоже на дату.'); return true; }
             },
             {
-                filter: (update: Update, ctx: Context) => Date.parse(update.message?.text as string) < Date.now(),
+                filter: (update: Update, ctx: Context) =>
+                    addHours(tryParseUtcIsoDate(update.message?.text as string) as Date, -EVENTS_INPUT_TIMEZONE).valueOf() < getUtcToday().valueOf(),
                 handle: async (update: Update, ctx: Context) => { await ctx.telegram.sendMessage('Эта дата уже в прошлом.'); return true; }
             },
 
         ),
         apply: (update: Update, ctx: Context, event: BadadaEventSeed): void => {
-            event.date = new Date(update.message?.text as string);
+            event.date = addHours(tryParseUtcIsoDate(update.message?.text as string) as Date, -EVENTS_INPUT_TIMEZONE);
         }
     },
     {

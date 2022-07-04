@@ -15,20 +15,20 @@ with parameters: ${e.params}
     `);
 });
 
-export async function get(from: Date, to?: Date): Promise<BadadaEvent[]> {
+export async function get(fromUtc: Date, toUtc?: Date): Promise<BadadaEvent[]> {
     let dbEvents: DBEvent[];
-    if(to)
+    if(toUtc)
         dbEvents = await db.event.findMany({
             where: {
                 AND: [
-                    { date: { gte: from } },
-                    { date: { lt: to } },
+                    { date: { gte: fromUtc } },
+                    { date: { lt: toUtc } },
                 ]
             }
         });
     else
         dbEvents = await db.event.findMany({
-            where:  { date: { gte: from } }
+            where:  { date: { gte: fromUtc } }
         });
     return dbEvents.map(dbEvent => {
         return {
