@@ -1,4 +1,4 @@
-import { addHours, tryParseIsoDate } from '../src/utils';
+import { addHours, getUtcDayStart, tryParseIsoDate } from '../src/utils';
 
 describe('tryParseUtcIsoDateValue', () => {
     describe('On incorrect date', () => {
@@ -21,6 +21,15 @@ describe('addHours', () => {
         it('Should add hours', () => {
             expect(addHours(new Date(2020, 0, 1), 3).valueOf()).toEqual(new Date(2020, 0, 1, 3).valueOf());
             expect(addHours(new Date(Date.UTC(2020, 0, 1)), 3).valueOf()).toEqual(new Date(Date.UTC(2020, 0, 1, 3)).valueOf());
+        });
+    });
+});
+
+describe('getUtcDayStart', () => {
+    describe('On correct date', () => {
+        it('Should return date start in UTC', () => {
+            expect(getUtcDayStart(new Date(Date.UTC(2020, 0, 1)), 0)).toEqual(new Date(Date.UTC(2020, 0, 1)));
+            expect(getUtcDayStart(new Date(Date.UTC(2020, 0, 1)), 3)).toEqual(new Date(Date.UTC(2019, 11, 31, 3)));
         });
     });
 });

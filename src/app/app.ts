@@ -34,7 +34,8 @@ bot.pipeline.on(
 
 async function getTodayEvents(): Promise<BadadaEvent[]> {
     const utcTodayStart = getUtcDayStart(getNow(), EVENTS_INPUT_TIMEZONE);
-    return await eventProvider(utcTodayStart, addDays(utcTodayStart, 1));
+    const utcTodayEnd = addDays(new Date(utcTodayStart.valueOf()), 1);
+    return await eventProvider(utcTodayStart, utcTodayEnd);
 }
 async function showTodayEvents(sendMessage: (message: string) => Promise<void>): Promise<void> {
     await sendMessage('Сегодня планируются такие мероприятия:');
