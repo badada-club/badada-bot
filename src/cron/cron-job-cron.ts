@@ -1,6 +1,4 @@
-import cors from 'cors';
 import { Express, Request, Response } from 'express';
-import { CRON_ORIGIN } from '../config';
 import { Cron } from './cron';
 export class CronJobCron extends Cron {
     private _active = false;
@@ -13,7 +11,7 @@ export class CronJobCron extends Cron {
     }
 
     setupExpress(app: Express): void {
-        app.put('/cron', cors({ origin: CRON_ORIGIN, methods: 'PUT' }), async (req: Request, res: Response) => {
+        app.put('/cron', async (req: Request, res: Response) => {
             this._active && this._action && await this._action();
             res.sendStatus(200);
         });
