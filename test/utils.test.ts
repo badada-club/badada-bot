@@ -29,7 +29,7 @@ describe('getUtcDayStart', () => {
     describe('On correct date', () => {
         it('Should return date start in UTC', () => {
             expect(getUtcDayStart(new Date(Date.UTC(2020, 0, 1)), 0)).toEqual(new Date(Date.UTC(2020, 0, 1)));
-            expect(getUtcDayStart(new Date(Date.UTC(2020, 0, 1)), 3)).toEqual(new Date(Date.UTC(2019, 11, 31, 3)));
+            expect(getUtcDayStart(new Date(Date.UTC(2020, 0, 1)), 3)).toEqual(new Date(Date.UTC(2019, 11, 31, 21)));
         });
     });
 });

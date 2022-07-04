@@ -1,6 +1,7 @@
 import { EventCommitter } from '../../../src/bot/event-committer/event-committer';
 import { EventMiddleware } from '../../../src/bot/middleware/event-middleware';
-import { eventDateToUtc } from '../../../src/utils';
+import { EVENTS_INPUT_TIMEZONE } from '../../../src/config';
+import { addHours } from '../../../src/utils';
 
 const now = new Date(Date.UTC(2022, 6, 4));
 jest.mock('../../../src/utils', () => {
@@ -57,7 +58,7 @@ describe('EventMiddleware', () => {
                 {
                     creatorChatId: 123,
                     event: {
-                        date: eventDateToUtc(new Date('2030-01-01')),
+                        date: addHours(new Date('2030-01-01'), -EVENTS_INPUT_TIMEZONE),
                         cost: 123
                     }
                 }
@@ -158,7 +159,7 @@ describe('EventMiddleware', () => {
                 {
                     creatorChatId: 123,
                     event: {
-                        date: eventDateToUtc(new Date('2030-01-01')),
+                        date: addHours(new Date('2030-01-01'), -EVENTS_INPUT_TIMEZONE),
                         cost: 123
                     }
                 }
@@ -187,7 +188,7 @@ describe('EventMiddleware', () => {
                 {
                     creatorChatId: 123,
                     event: {
-                        date: eventDateToUtc(now),
+                        date: addHours(now, -EVENTS_INPUT_TIMEZONE),
                         cost: 123
                     }
                 }

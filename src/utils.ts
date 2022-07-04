@@ -1,4 +1,3 @@
-import { EVENTS_INPUT_TIMEZONE } from './config';
 
 export const Guard = {
     requires: (condition: boolean, message?: string): void => {
@@ -47,16 +46,10 @@ export function getUtcDateValue(date: Date): number {
         throw new Error(`Cannot extract date from the falsy '${date}' Date.`);
     return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
-export function eventDateToUtc(local: Date): Date {
-    return addHours(new Date(local.valueOf()), -EVENTS_INPUT_TIMEZONE);
-}
 export function getNow(): Date {
     return new Date(Date.now());
 }
 export function getUtcDayStart(date: Date, timezone: number): Date {
-    const clone = new Date(date.valueOf());
-    addHours(clone, -timezone);
-    const utcDateStartValue = getUtcDateValue(clone);
-    const utcDateStart = new Date(utcDateStartValue);
-    return addHours(utcDateStart, timezone);
+    const utcDateValue = getUtcDateValue(date);
+    return addHours(new Date(utcDateValue), -timezone);
 }
