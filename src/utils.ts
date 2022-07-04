@@ -1,3 +1,5 @@
+import { EVENTS_INPUT_TIMEZONE } from './config';
+
 export const Guard = {
     requires: (condition: boolean, message?: string): void => {
         if(!condition)
@@ -13,13 +15,8 @@ export function tryParseJSON(json: string): any {
     }
 }
 
-export function tryParseUtcIsoDate(dateStr: string): Date | undefined {
-    const value = tryParseUtcIsoDateValue(dateStr);
-    if(!value)
-        return undefined;
-    return new Date(value);
-}
-export function tryParseUtcIsoDateValue(dateStr: string): number | undefined {
+export function tryParseIsoDate(dateStr: string, timezone: number): Date | undefined {
+    Guard.requires(typeof timezone === 'number');
     if(!dateStr)
         return undefined;
     // eslint-disable-next-line no-useless-escape
@@ -30,7 +27,8 @@ export function tryParseUtcIsoDateValue(dateStr: string): number | undefined {
     const year = parseInt(match[1]);
     const month = parseInt(match[2]);
     const day = parseInt(match[3]);
-    return Date.UTC(year, month - 1, day);
+    const utcPlusOffset = new Date(Date.UTC(year, month - 1, day));
+    return addHours(utcPlusOffset, -timezone);
 }
 export function addHours(date: Date, n: number): Date {
     if(!date)
@@ -49,6 +47,16 @@ export function getUtcDateValue(date: Date): number {
         throw new Error(`Cannot extract date from the falsy '${date}' Date.`);
     return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
-export function getUtcToday(): Date {
-    return new Date(getUtcDateValue(new Date(Date.now())));
+export function eventDateToUtc(local: Date): Date {
+    return addHours(new Date(local.valueOf()), -EVENTS_INPUT_TIMEZONE);
+}
+export function getNow(): Date {
+    return new Date(Date.now());
+}
+export function getUtcDayStart(date: Date, timezone: number): Date {
+    const clone = new Date(date.valueOf());
+    addHours(clone, -timezone);
+    const utcDateStartValue = getUtcDateValue(clone);
+    const utcDateStart = new Date(utcDateStartValue);
+    return addHours(utcDateStart, timezone);
 }
