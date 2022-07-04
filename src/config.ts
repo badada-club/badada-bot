@@ -8,3 +8,5 @@ export const BADADA_CLUB_CHAT_ID = parseInt(process.env.BADADA_CLUB_CHAT_ID as s
 export const HEROKU_APP_NAME = process.env.APP_NAME as string;
 
 export const CRON_ORIGIN = process.env.CRON_ORIGIN as string;
+
+export const EVENTS_INPUT_TIMEZONE = 3;

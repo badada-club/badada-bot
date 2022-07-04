@@ -6,10 +6,11 @@ import { MessageToChannelEventCommitter } from '../bot/event-committer/message-t
 import { EventMiddleware } from '../bot/middleware/event-middleware';
 import { Context } from '../bot/pipeline';
 import { BadadaEvent } from '../common/event';
-import { BADADA_CLUB_CHAT_ID, TELEGRAM_API_TOKEN } from '../config';
+import { BADADA_CLUB_CHAT_ID, EVENTS_INPUT_TIMEZONE, TELEGRAM_API_TOKEN } from '../config';
 import { CronJobCron } from '../cron/cron-job-cron';
 import { Update } from '../telegram/telegram-types';
 import { sendMessage } from '../telegram/telegram-utils';
+import { addDays, getNow, getUtcDayStart } from '../utils';
 import { DataBaseEventCommitter } from './db-event-committer';
 import { get as eventProvider } from './db-event-provider';
 
@@ -32,10 +33,9 @@ bot.pipeline.on(
 );
 
 async function getTodayEvents(): Promise<BadadaEvent[]> {
-    const now = new Date();
-    const from = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const to = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    return await eventProvider(from, to);
+    const utcTodayStart = getUtcDayStart(getNow(), EVENTS_INPUT_TIMEZONE);
+    const utcTodayEnd = addDays(new Date(utcTodayStart.valueOf()), 1);
+    return await eventProvider(utcTodayStart, utcTodayEnd);
 }
 async function showTodayEvents(sendMessage: (message: string) => Promise<void>): Promise<void> {
     await sendMessage('Сегодня планируются такие мероприятия:');
