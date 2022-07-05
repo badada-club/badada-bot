@@ -1,4 +1,5 @@
 node_modules
 dist
 src/db/prisma/badada/generated
+src/db/prisma/badada/migrations
 *.env
