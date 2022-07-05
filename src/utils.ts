@@ -1,4 +1,3 @@
-
 export const Guard = {
     requires: (condition: boolean, message?: string): void => {
         if(!condition)

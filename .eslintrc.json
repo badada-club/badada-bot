@@ -12,7 +12,8 @@
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "@typescript-eslint",
@@ -22,11 +23,17 @@
         "indent": [
             "error",
             4,
-            { "SwitchCase": 1 }
+            {
+                "SwitchCase": 1
+            }
         ],
         "no-multiple-empty-lines": [
             "error",
-            { "max": 1, "maxBOF": 0, "maxEOF": 0 }
+            {
+                "max": 1,
+                "maxBOF": 0,
+                "maxEOF": 0
+            }
         ],
         "no-multi-spaces": [
             "error"
@@ -46,6 +53,12 @@
         "no-unused-vars": [
             "off"
         ],
+        "require-await": [
+            "error"
+        ],
+        "no-extra-semi": [
+            "error"
+        ],
         "@typescript-eslint/no-unused-vars": [
             "off"
         ],
@@ -55,10 +68,10 @@
         "@typescript-eslint/no-explicit-any": [
             "off"
         ],
-        "no-extra-semi": [
+        "@typescript-eslint/explicit-function-return-type": [
             "error"
         ],
-        "@typescript-eslint/explicit-function-return-type": [
+        "@typescript-eslint/no-floating-promises": [
             "error"
         ]
     }

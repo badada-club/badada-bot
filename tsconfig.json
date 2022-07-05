@@ -93,7 +93,8 @@
         "skipLibCheck": false /* Skip type checking all .d.ts files. */
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "test/**/*",
     ],
     "watchOptions": {
         "watchFile": "useFsEvents",

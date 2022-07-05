@@ -8,7 +8,7 @@ const db = new DB({
     }],
 });
 
-db.$on('query', async (e) => {
+db.$on('query', (e) => {
     console.log(`
 executed query: ${e.query}
 with parameters: ${e.params}
