@@ -94,7 +94,6 @@
     },
     "include": [
         "src/**/*",
-        "test/**/*",
     ],
     "watchOptions": {
         "watchFile": "useFsEvents",
