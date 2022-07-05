@@ -1,5 +1,7 @@
 import { EventCommitter } from '../../../src/bot/event-committer/event-committer';
-import { EventMiddleware } from '../../../src/bot/middleware/event-middleware';
+import { createEventMiddleware } from '../../../src/bot/middleware/event-middleware';
+import { Questionnaire } from '../../../src/bot/middleware/questionnaire';
+import { BadadaEventSeed } from '../../../src/common/event';
 import { EVENTS_INPUT_TIMEZONE } from '../../../src/config';
 import { addHours } from '../../../src/utils';
 
@@ -13,7 +15,7 @@ jest.mock('../../../src/utils', () => {
 });
 
 describe('EventMiddleware', () => {
-    let middleware: EventMiddleware;
+    let middleware: Questionnaire<BadadaEventSeed>;
     let commitSpy: jest.Mock;
 
     beforeEach(() => {
@@ -21,7 +23,7 @@ describe('EventMiddleware', () => {
         const committerStub: EventCommitter = {
             commit: commitSpy
         };
-        middleware = new EventMiddleware(committerStub);
+        middleware = createEventMiddleware(committerStub);
     });
 
     describe('On correct creation of a new event', () => {

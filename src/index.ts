@@ -2,10 +2,13 @@ import { app, bot, cron } from './app/app';
 import { HEROKU_APP_NAME } from './config';
 import { getAppUri } from './heroku-utils';
 
-bot.setWebHook(getAppUri(HEROKU_APP_NAME)).then((ok: boolean) => {
-    if(!ok)
-        process.kill(process.pid, 'SIGTERM');
-});
+bot.setWebHook(getAppUri(HEROKU_APP_NAME)).then(
+    (ok: boolean) => {
+        if(!ok)
+            process.kill(process.pid, 'SIGTERM');
+    },
+    () => process.kill(process.pid, 'SIGTERM')
+);
 
 const PORT: string | number = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {

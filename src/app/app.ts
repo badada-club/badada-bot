@@ -3,7 +3,7 @@ import { Bot } from '../bot/bot';
 import { commands } from '../bot/commands';
 import { EventCommitterChain } from '../bot/event-committer/event-committer';
 import { MessageToChannelEventCommitter } from '../bot/event-committer/message-to-channel-event-committer';
-import { EventMiddleware } from '../bot/middleware/event-middleware';
+import { createEventMiddleware } from '../bot/middleware/event-middleware';
 import { Context } from '../bot/pipeline';
 import { BadadaEvent } from '../common/event';
 import { BADADA_CLUB_CHAT_ID, EVENTS_INPUT_TIMEZONE, TELEGRAM_API_TOKEN } from '../config';
@@ -15,7 +15,7 @@ import { DataBaseEventCommitter } from './db-event-committer';
 import { get as eventProvider } from './db-event-provider';
 
 export const bot = new Bot(TELEGRAM_API_TOKEN);
-bot.pipeline.use(new EventMiddleware(new EventCommitterChain(new MessageToChannelEventCommitter(), new DataBaseEventCommitter())));
+bot.pipeline.use(createEventMiddleware(new EventCommitterChain(new MessageToChannelEventCommitter(), new DataBaseEventCommitter())));
 bot.pipeline.on(
     (upd: Update, ctx: Context) => ctx.command === commands.start,
     async (upd: Update, ctx: Context) => { await ctx.telegram.sendMessage('Привет!'); return true; }

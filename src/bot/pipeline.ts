@@ -1,5 +1,4 @@
 import { Update } from '../telegram/telegram-types';
-import { Command } from './commands';
 
 export class Pipeline implements UpdateHandler {
     static create(...middlewares: Middleware[]): Pipeline {
@@ -40,7 +39,7 @@ export type Middleware = UpdateHandler & UpdateFilter;
 export interface Context {
     chatId: number;
     telegram: Telegram;
-    command?: Command;
+    command?: string;
     commandArg?: string;
 }
 export interface Telegram {
