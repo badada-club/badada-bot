@@ -6,7 +6,7 @@
     "main": "dist/index.js",
     "scripts": {
         "postinstall": "npm run prisma:generate",
-        "heroku-postbuild": "npm run prisma:migrate:prod",
+        "heroku-postbuild": "npm run prisma:migrate:prod && npm run build",
         "prebuild": "npm run prisma:generate",
         "build": "npx tsc",
         "postbuild": "npm run copy-prisma",
