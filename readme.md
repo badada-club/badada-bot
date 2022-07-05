@@ -80,7 +80,7 @@ DATABASE_URL=postgresql://postgres:local_postgres@localhost:5432/<имя_баз�
 ```
 3. Создать базу:
 ```
-npm run prisma:migrate
+npm run prisma:migrate:dev
 ```
 4. Запустить сервер:
 ```
@@ -92,7 +92,7 @@ npm run start
 1. Поменять схему в .prisma файле.
 2. Накатить изменения на БД:
 ```
-npm run prisma:migrate
+npm run prisma:migrate:dev
 ```
 Если новая схема конфликтует со старой, Prisma предложит потереть все в существующей базе.
 
