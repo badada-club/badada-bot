@@ -9,7 +9,7 @@ import { Question, Questionnaire } from './questionnaire';
 
 export function createEventMiddleware(committer: EventCommitter): Questionnaire<BadadaEventSeed> {
     return new Questionnaire<BadadaEventSeed>(
-        commands.new_event,
+        commands.new_event.command,
         [
             new Question<BadadaEventSeed>(
                 'Укажи дату в формате YYYY-MM-DD (по московскому времени).',
