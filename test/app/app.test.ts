@@ -45,7 +45,7 @@ describe('bot setup', () => {
                 message: {
                     message_id: 123,
                     chat: { id: 123 },
-                    text: `/${commands.new_event}`
+                    text: `/${commands.new_event.command}`
                 }
             });
         mockedAxiosPost.mockClear();
@@ -58,7 +58,7 @@ describe('bot setup', () => {
                 message: {
                     message_id: 124,
                     chat: { id: 123 },
-                    text: `/${commands.echo}`
+                    text: `/${commands.echo.command}`
                 }
             });
 

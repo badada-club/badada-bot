@@ -9,7 +9,7 @@ import { Question, Questionnaire } from './questionnaire';
 
 export function createEventMiddleware(committer: EventCommitter): Questionnaire<BadadaEventSeed> {
     return new Questionnaire<BadadaEventSeed>(
-        commands.new_event,
+        commands.new_event.command,
         [
             new Question<BadadaEventSeed>(
                 'Укажи дату в формате YYYY-MM-DD (по московскому времени).',
@@ -44,9 +44,12 @@ export function createEventMiddleware(committer: EventCommitter): Questionnaire<
                 }
             )
         ],
-        (ctx: Context, answer: BadadaEventSeed) => committer.commit({
-            event: answer as BadadaEvent,
-            creatorChatId: ctx.chatId,
-        })
+        async (ctx: Context, answer: BadadaEventSeed) => {
+            await committer.commit({
+                event: answer as BadadaEvent,
+                creatorChatId: ctx.chatId,
+            });
+            await ctx.telegram.sendMessage('Мероприятие успешно создано!');
+        }
     );
 }

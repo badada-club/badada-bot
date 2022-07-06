@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { Express, Request, Response } from 'express';
 import { Update } from '../telegram/telegram-types';
-import { getChatId, getCommand, getTelegramApiUri, getWebHookAction } from '../telegram/telegram-utils';
-import { Command } from './commands';
+import { getChatId, getCommand, getTelegramApiUri, getWebHookAction, setMyCommands } from '../telegram/telegram-utils';
+import { commands } from './commands';
 import { Context, Pipeline } from './pipeline';
 import { Telegram } from './telegram';
 
@@ -63,7 +63,7 @@ export class Bot {
             }
             return {
                 chatId: chatId,
-                command: command as Command,
+                command: command,
                 commandArg: commandArg,
                 telegram: new Telegram(this._token, chatId)
             };
@@ -74,6 +74,9 @@ export class Bot {
 
     async terminate(): Promise<void> {
 
+    }
+    async init(): Promise<void> {
+        await setMyCommands(this._token, Object.values(commands));
     }
 }
 

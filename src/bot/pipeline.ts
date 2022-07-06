@@ -1,4 +1,5 @@
 import { Update } from '../telegram/telegram-types';
+import { TelegramApi } from './telegram';
 
 export class Pipeline implements UpdateHandler {
     static create(...middlewares: Middleware[]): Pipeline {
@@ -38,10 +39,7 @@ export type Middleware = UpdateHandler & UpdateFilter;
 
 export interface Context {
     chatId: number;
-    telegram: Telegram;
+    telegram: TelegramApi;
     command?: string;
     commandArg?: string;
-}
-export interface Telegram {
-    sendMessage: (message: string) => Promise<void>;
 }

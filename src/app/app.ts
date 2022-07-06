@@ -17,20 +17,21 @@ import { get as eventProvider } from './db-event-provider';
 export const bot = new Bot(TELEGRAM_API_TOKEN);
 bot.pipeline.use(createEventMiddleware(new EventCommitterChain(new MessageToChannelEventCommitter(), new DataBaseEventCommitter())));
 bot.pipeline.on(
-    (upd: Update, ctx: Context) => ctx.command === commands.start,
+    (upd: Update, ctx: Context) => ctx.command === commands.start.command,
     async (upd: Update, ctx: Context) => { await ctx.telegram.sendMessage('Привет!'); return true; }
 );
 bot.pipeline.on(
-    (upd: Update, ctx: Context) => !!upd.message && ctx.command === commands.echo,
+    (upd: Update, ctx: Context) => !!upd.message && ctx.command === commands.echo.command,
     async (upd: Update, ctx: Context) => { if(ctx.commandArg) await ctx.telegram.sendMessage(ctx.commandArg); return true; }
 );
 bot.pipeline.on(
-    (upd: Update, ctx: Context) => ctx.command === commands.events_today,
+    (upd: Update, ctx: Context) => ctx.command === commands.events_today.command,
     async (upd: Update, ctx: Context) => {
         await showTodayEvents(async (message: string) => await ctx.telegram.sendMessage(message));
         return true;
     }
 );
+void bot.init();
 
 async function getTodayEvents(): Promise<BadadaEvent[]> {
     const utcTodayStart = getUtcDayStart(getNow(), EVENTS_INPUT_TIMEZONE);
@@ -38,8 +39,13 @@ async function getTodayEvents(): Promise<BadadaEvent[]> {
     return await eventProvider(utcTodayStart, utcTodayEnd);
 }
 async function showTodayEvents(sendMessage: (message: string) => Promise<void>): Promise<void> {
-    await sendMessage('Сегодня планируются такие мероприятия:');
-    (await getTodayEvents()).forEach(async event => await sendMessage(JSON.stringify(event)));
+    const eventsToday = await getTodayEvents();
+    if(!eventsToday || eventsToday.length === 0) {
+        await sendMessage('Мероприятий на сегодня пока не запланировано.');
+    } else {
+        await sendMessage('Сегодня планируются такие мероприятия:');
+        eventsToday.forEach(async event => await sendMessage(JSON.stringify(event)));
+    }
 }
 
 export const cron = new CronJobCron();

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { TELEGRAM_BOT_USERNAME } from '../config';
-import { Message, Method as TelegramMethod } from './telegram-types';
+import { BotCommand, Message, Method as TelegramMethod } from './telegram-types';
 
 export async function sendMessage(token: string, chatId: number, message: string): Promise<void> {
     console.log('Sending message...');
@@ -12,28 +12,11 @@ export async function sendMessage(token: string, chatId: number, message: string
             text: message
         });
 }
-async function sendReplyKeyboardMessage(token: string, chatId: number, message: string, replyButtons: any[]): Promise<void> {
-    if(message) // Telegram does no accept empty messages
-        await sendRequest(token, 'sendMessage', {
-            chat_id: chatId,
-            text: message,
-            reply_markup: {
-                keyboard: [replyButtons],
-                resize_keyboard: true,
-                one_time_keyboard: true
-            }
-        });
+
+export async function setMyCommands(token: string, commands: BotCommand[]): Promise<void> {
+    await sendRequest(token, 'setMyCommands', { commands });
 }
-async function sendInlineKeyboardMessage(token: string, chatId: number, message: string, inlineButtons: any[]): Promise<void> {
-    if(message) // Telegram does no accept empty messages
-        await sendRequest(token, 'sendMessage', {
-            chat_id: chatId,
-            text: message,
-            reply_markup: {
-                inline_keyboard : [inlineButtons]
-            }
-        });
-}
+
 async function sendRequest(token: string, method: TelegramMethod, params: any): Promise<void> {
     const url = `${getTelegramApiUri(token)}/${method}`;
     console.log('Sending request...');

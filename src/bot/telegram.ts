@@ -1,6 +1,11 @@
-import { sendMessage } from '../telegram/telegram-utils';
+import { BotCommand } from '../telegram/telegram-types';
+import { sendMessage, setMyCommands } from '../telegram/telegram-utils';
 
-export class Telegram {
+export interface TelegramApi {
+    sendMessage: (message: string) => Promise<void>;
+    setMyCommands: (commands: BotCommand[]) => Promise<void>;
+}
+export class Telegram implements TelegramApi {
     private readonly _token: string;
     private readonly _chatId: number;
 
@@ -11,4 +16,8 @@ export class Telegram {
     async sendMessage(message: string): Promise<void> {
         await sendMessage(this._token, this._chatId, message);
     }
+    async setMyCommands(commands: BotCommand[]): Promise<void> {
+        await setMyCommands(this._token, commands);
+    }
+
 }

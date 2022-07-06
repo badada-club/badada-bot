@@ -32,7 +32,7 @@ describe('Bot', () => {
                 message: {
                     message_id: 123,
                     chat: { id: 123 },
-                    text: `/${commands.start}`
+                    text: `/${commands.start.command}`
                 }
             };
         });
