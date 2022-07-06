@@ -5,9 +5,9 @@ export class Questionnaire<T> implements Middleware {
     private readonly _sessions = new Map<number, QuestionnaireSession<T>>();
     private readonly _command: string;
     private readonly _questions: Question<T>[];
-    private readonly _commit: (ctx: Context, answer: T) => void;
+    private readonly _commit: (ctx: Context, answer: T) => Promise<void>;
 
-    constructor(command: string, questions: Question<T>[], commit: (ctx: Context, answer: T) => void) {
+    constructor(command: string, questions: Question<T>[], commit: (ctx: Context, answer: T) => Promise<void>) {
         this._command = command;
         this._questions = questions;
         this._commit = commit;
@@ -28,7 +28,7 @@ export class Questionnaire<T> implements Middleware {
                 if(session.questionId + 1 < this._questions.length)
                     await this._startSession(ctx, { seed: session.seed, questionId: session.questionId + 1 });
                 else
-                    this._commit(ctx, session.seed);
+                    await this._commit(ctx, session.seed);
             } else {
                 await question.ask(ctx);
             }  

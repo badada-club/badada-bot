@@ -44,9 +44,12 @@ export function createEventMiddleware(committer: EventCommitter): Questionnaire<
                 }
             )
         ],
-        (ctx: Context, answer: BadadaEventSeed) => committer.commit({
-            event: answer as BadadaEvent,
-            creatorChatId: ctx.chatId,
-        })
+        async (ctx: Context, answer: BadadaEventSeed) => {
+            await committer.commit({
+                event: answer as BadadaEvent,
+                creatorChatId: ctx.chatId,
+            });
+            await ctx.telegram.sendMessage('Мероприятие успешно создано!');
+        }
     );
 }

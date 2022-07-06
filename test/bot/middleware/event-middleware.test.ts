@@ -86,7 +86,7 @@ describe('EventMiddleware', () => {
                 { message: { message_id: 2, chat: { id: 123 }, text: '123' } },
                 { chatId: 123, telegram: <any>{ sendMessage: costStub } }
             );
-            expect(costStub).toHaveBeenCalledTimes(0);
+            expect(costStub).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -136,7 +136,7 @@ describe('EventMiddleware', () => {
                 { message: { message_id: 2, chat: { id: 123 }, text: '123' } },
                 { chatId: 123, telegram: <any>{ sendMessage: costStub } }
             );
-            expect(costStub).toHaveBeenCalledTimes(0);
+            expect(costStub).toHaveBeenCalledTimes(1);
         });
         it('Should finally send a message to events channel', async () => {
             await middleware.handle(
