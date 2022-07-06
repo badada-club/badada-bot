@@ -1,0 +1,5 @@
+- Выполнение HTTP запросов: [axios](https://github.com/axios/axios)
+- Маршрутизация: [express.js](https://expressjs.com/)
+- ORM: [prisma](https://www.prisma.io/)
+- Регулярные задания: [cron-job.org](https://cron-job.org/).
+- Хостинг: [Heroku](https://www.heroku.com/).
