@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Express, Request, Response } from 'express';
+import { TELEGRAM_BOT_USERNAME } from '../config';
 import { Update } from '../telegram/telegram-types';
 import { getChatId, getCommand, getTelegramApiUri, getWebHookAction, setMyCommands } from '../telegram/telegram-utils';
 import { commands } from './commands';
@@ -53,13 +54,14 @@ export class Bot {
             const text = update.message.text;
             if(!text)
                 throw new CreateContextError('400: The text of the received message is empty.');
-            const trimmedText = text.trimStart();
             let command: string | undefined = undefined;
             let commandArg: string | undefined = undefined;
-            if(trimmedText.startsWith('/')) {
-                command = getCommand(trimmedText);
-                if(command)
-                    commandArg = trimmedText.substring(command.length + 1);
+            const parseCommandResult = getCommand(text);
+            if(parseCommandResult) {
+                let botName;
+                ({ command, botName, commandArg } = parseCommandResult);
+                if(!!botName && botName !== TELEGRAM_BOT_USERNAME)
+                    throw new CreateContextError('400: The command is issued to another bot.');
             }
             return {
                 chatId: chatId,

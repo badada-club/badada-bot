@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { TELEGRAM_BOT_USERNAME } from '../config';
 import { BotCommand, Message, Method as TelegramMethod } from './telegram-types';
 
 export async function sendMessage(token: string, chatId: number, message: string): Promise<void> {
@@ -27,15 +26,16 @@ async function sendRequest(token: string, method: TelegramMethod, params: any): 
 export function getChatId(message: Message): number {
     return message?.chat?.id;
 }
-export function getCommand(messageText: string): string {
-    const trimmedText = messageText.trimStart();
-    let firstSpace = trimmedText.indexOf(' ');
-    if(firstSpace === -1)
-        firstSpace = trimmedText.length;
-    const firstParam = trimmedText.substring(0, firstSpace);
-    const atLocation = firstParam.lastIndexOf('@'); // Commands may end with the bot's name, see https://core.telegram.org/bots#commands
-    const botName = atLocation !== -1 ? firstParam.substring(atLocation + 1) : null;
-    return firstParam.substring(1, botName === TELEGRAM_BOT_USERNAME ? atLocation : firstParam.length);
+export function getCommand(messageText: string): { command: string, botName: string, commandArg: string } | undefined {
+    const regExp = /^\/(?<command>[a-zA-Z0-9_]+)(?:@(?<bot>[a-zA-Z0-9_]+))?(?:\s+(?<commandArg>.*))?$/g;
+    const match = regExp.exec(messageText);
+    if(!match)
+        return undefined;
+    return {
+        command: match[1],
+        botName: match[2],
+        commandArg: match[3]
+    };
 }
 
 export const TELEGRAM_URI = 'https://api.telegram.org';
